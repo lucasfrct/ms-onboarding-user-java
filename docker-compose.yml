@@ -1,13 +1,41 @@
-version: '3.8'
+version: "3"
 services:
-  petclinic:
-    build:
-      context: .
-    ports:
-      - 8000:8000
-      - 8080:8080
-    environment:
-      - SERVER_PORT=8080
+  environment:
+    container_name: ms-onbloarding-authentication-java
+    image: ms-onbloarding-authentication-java
+    hostname: ms-onbloarding-authentication-java
+    labels:
+      description: ms-onbloarding-authentication-java
+      org.opencontainers.image.name: ms-onbloarding-authentication-java
+      org.opencontainers.image.authors: Lucas Costa
+      org.opencontainers.image.hostname: ms-onbloarding-authentication-java
+      com.docker.volume.name: ms-onbloarding-authentication-java
+      com.docker.network.bridge.name: ms-onbloarding-authentication-java
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    working_dir: /tmp
     volumes:
-      - ./:/app
-    command: ./mvnw spring-boot:run"
+      - ./:/tmp/
+      # - local-volume:/tmp/*
+    env_file:
+      - ./.env 
+    environment:
+      JAVA_ENV: "development"
+    command: java -jar /data/environment-java-0.1.0.jar
+    networks:
+      - local-network
+    restart: always
+    ports:
+      - 8080:8080
+    
+volumes:
+  local-volume:
+    name: ms-onbloarding-authentication-java
+networks:
+  local-network:
+    name: ms-onbloarding-authentication-java
+    driver: bridge
+
+#  mvn package
+#  java -jar .\target\environment-java-0.1.0.jar
