@@ -1,4 +1,4 @@
-package com.environment.aplication;
+package com.environment.aplication.v0;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +8,7 @@ public class Healthz {
     
     @RequestMapping("/healthz")
     public String index() {
-        return "Health: UP 06";
+        return "Health: UP";
     }
     
 }
