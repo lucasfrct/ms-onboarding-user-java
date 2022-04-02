@@ -10,13 +10,13 @@ public class SHA512
 
     }
 
-    public static String getSHA512(String toHash, String salt)
+    public static String cipher(String str, String salt)
     {
-        for (int i = 0; i < 100000; i++)
+        for (int i = 0; i < 1000; i++)
         {
-            toHash = SHA512once(toHash+salt);
+            str = SHA512once(str+salt);
         }
-        return SHA512once(toHash);
+        return SHA512once(str);
     }
 
     private static String SHA512once(String toHash)
