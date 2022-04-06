@@ -2,8 +2,11 @@ package com.environment.domain;
 
 import com.environment.infrastructure.utils.SHA512;
 import javax.validation.constraints.Size;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Collections;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import com.environment.infrastructure.utils.RemoveChar;
@@ -26,9 +29,9 @@ public class User {
 
     String fullName;
     
-    @Size(min = 11, max = 11, message = "phone must be 11 characters long")
+    @Size(min = 11, max = 15, message = "phone must be 11 characters long")
     @RemoveChar
-    String phone; // length 11
+    String phone; // length 11, Só numeros
 
     @Email
     String email; // alphanumerico, has @, has .com
@@ -40,7 +43,7 @@ public class User {
     String passwordHash;
     String uidDevice;
     
-    public User(String uuid, String firstName, String lastName, CharSequence phone, String email, String password, String confirmPassword, String salt) {
+    public User(String uuid, String firstName, String lastName, String phone, String email, String password, String confirmPassword, String salt) {
         this.uuid = uuid;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -79,8 +82,47 @@ public class User {
         return confirmPassword;
     }
 
-    public Boolean validate() {
-        return true;
+    /**
+     * verifica se o telefone tem algum caractere invalido ou se e diferente do tamanho 11.
+     */
+    public Map<String, String> validatePhone() {
+
+        Map<String, String> response = new HashMap<String, String>();
+
+        // verifica se o telefone tem algum caractere invalido
+        Boolean check = this.phone.matches(".*[a-zA-Z].*");
+        if (check) {
+            response.put("status", "false");
+            response.put("message", "Phone contém caractéres inválidos!");
+            return response;
+        }
+
+        // verifica se o telefone tem tamanho diferente de 11
+        String num = this.phone.replaceAll("[^0-9]", "");
+        int size = num.length();
+        if (size != 11) {
+            response.put("status", "false");
+            response.put("message", "Phone tem tamanho inválido!");
+            return response;
+        }
+
+        response.put("status", "true");
+        response.put("message", "");
+        return response;
+    }
+    // [status = true, message = "message"]
+
+    public Map<String, String> validate() {
+        Map<String, String> phone = this.validatePhone();
+        Boolean checkPhone = Boolean.parseBoolean(phone.get("status"));
+        if (!checkPhone) {
+            return phone;
+        }
+        
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("status", "true");
+        result.put("message", "");
+        return result;
     }
 
     public String save() {

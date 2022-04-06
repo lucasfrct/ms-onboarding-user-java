@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.FieldNamingPolicy;
+
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -64,6 +66,9 @@ public class CreateUser {
             System.out.println("validation: "+violation.getMessage());
         }
         System.out.println("Test");
+
+        Map<String, String> validate = user.validate();
+        System.out.println("validation: "+validate);
 
         return "CREATE USER";
     }
