@@ -1,14 +1,18 @@
 package com.environment.domain;
 
 import com.environment.infrastructure.utils.SHA512;
+
 import javax.validation.constraints.Size;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+
 import com.environment.infrastructure.utils.RemoveChar;
 
 /**
@@ -21,13 +25,13 @@ public class User {
 
     @Size(min = 3, max = 30, message = "firstName must be between 3 and 30 characters")
     @NotEmpty(message = "firstName cannot be null")
-    private String firstName; // min 3 - max 30
+    public String firstName; // min 3 - max 30
     
     @Size(min = 3, max = 30, message = "lastName must be between 3 and 30 characters")
     @NotEmpty(message = "lastName cannot be null")
-    String lastName; // min 3 - max 30
+    public String lastName; // min 3 - max 30
 
-    String fullName;
+    public String fullName;
     
     @Size(min = 11, max = 15, message = "phone must be 11 characters long")
     @RemoveChar
@@ -36,7 +40,7 @@ public class User {
     @Email
     String email; // alphanumerico, has @, has .com
 
-
+    @Size(min = 8, max = 20, message = "password deve conter no minimo 8 e no maximo 20 caracteres!")
     String password; // uppercase, lowercase, num, special, min 8
     String confirmPassword;
     String salt;
@@ -82,48 +86,144 @@ public class User {
         return confirmPassword;
     }
 
+    public Map<String, String> validateFirstName() {
+
+        Map<String, String> valid = new HashMap<String, String>();
+
+        Boolean check = this.firstName.matches(".*[0-9].*");
+        if (check) {
+            valid.put("status", "false");
+            valid.put("message", "First Name contém caracteres inválidos!");
+            return valid;
+        }
+
+        valid.put("status", "true");
+        valid.put("message", "");
+        return valid;
+    }
+
+    public Map<String, String> validateLastName() {
+
+        Map<String, String> valid = new HashMap<String, String>();
+
+        Boolean check = this.lastName.matches(".*[0-9].*");
+        if (check) {
+            valid.put("status", "false");
+            valid.put("message", "Last Name contém caracteres inválidos!");
+            return valid;
+        }
+
+        valid.put("status", "true");
+        valid.put("message", "");
+        return valid;
+    }
+
     /**
      * verifica se o telefone tem algum caractere invalido ou se e diferente do tamanho 11.
      */
     public Map<String, String> validatePhone() {
 
-        Map<String, String> response = new HashMap<String, String>();
+        Map<String, String> valid = new HashMap<String, String>();
 
         // verifica se o telefone tem algum caractere invalido
         Boolean check = this.phone.matches(".*[a-zA-Z].*");
         if (check) {
-            response.put("status", "false");
-            response.put("message", "Phone contém caractéres inválidos!");
-            return response;
+            valid.put("status", "false");
+            valid.put("message", "Phone contém caractéres inválidos!");
+            return valid;
         }
 
         // verifica se o telefone tem tamanho diferente de 11
         String num = this.phone.replaceAll("[^0-9]", "");
         int size = num.length();
         if (size != 11) {
-            response.put("status", "false");
-            response.put("message", "Phone tem tamanho inválido!");
-            return response;
+            valid.put("status", "false");
+            valid.put("message", "Phone tem tamanho inválido!");
+            return valid;
         }
 
-        response.put("status", "true");
-        response.put("message", "");
-        return response;
+        valid.put("status", "true");
+        valid.put("message", "");
+        return valid;
     }
-    // [status = true, message = "message"]
+
+    public Map<String, String> validatePassword() {
+
+        String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(this.password);
+
+        Map<String, String> valid = new HashMap<String, String>();
+
+        Boolean check = this.passwordCheck();
+        if (!check) {
+            valid.put("status", "false");
+            valid.put("message", "Senhas incompativeis");
+            return valid;
+        }
+
+        Boolean checkRegex = matcher.matches();
+        if (!checkRegex) {
+            valid.put("status", "false");
+            valid.put("message", "O password deve conter no minimo 8 e no maximo 20 caracteres, pelo menos uma letra maiúscula, pelo menos um letra minúscula e um caractere especial!");
+            return valid;
+        }
+
+        valid.put("status", "true");
+        valid.put("message", "");
+        return valid;
+    }
+
+    public Map<String, String> validateUuid() {
+
+        Map<String, String> valid = new HashMap<String, String>();
+
+        Boolean check = this.uuid.length() == 36;
+        if (!check) {
+            valid.put("status", "false");
+            valid.put("message", "Serviço indisponível. Tente novamente em instantes.");
+            return valid;
+        }
+        
+        valid.put("status", "true");
+        valid.put("message", "");
+        return valid;
+    }
+
 
     public Map<String, String> validate() {
-        Map<String, String> phone = this.validatePhone();
-        Boolean checkPhone = Boolean.parseBoolean(phone.get("status"));
-        if (!checkPhone) {
-            return phone;
+
+        Map<String, String> firstNameValid = this.validateFirstName();
+        if (!Boolean.parseBoolean(firstNameValid.get("status"))) {
+            return firstNameValid;
+        }
+
+        Map<String, String> lastNameValid = this.validateLastName();
+        if (!Boolean.parseBoolean(lastNameValid.get("status"))) {
+            return lastNameValid;
+        }
+
+        Map<String, String> phoneValid = this.validatePhone();
+        if (!Boolean.parseBoolean(phoneValid.get("status"))) {
+            return phoneValid;
+        }
+
+        Map<String, String> passwordValid = this.validatePassword();
+        if (!Boolean.parseBoolean(passwordValid.get("status"))) {
+            return passwordValid;
+        }
+
+        Map<String, String> uuidValid = this.validateUuid();
+        if (!Boolean.parseBoolean(uuidValid.get("status"))) {
+            return uuidValid;
         }
         
         Map<String, String> result = new HashMap<String, String>();
         result.put("status", "true");
-        result.put("message", "");
+        result.put("message", ""); 
         return result;
     }
+    
 
     public String save() {
         return "";

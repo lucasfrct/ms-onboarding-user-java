@@ -1,12 +1,15 @@
 package com.environment.aplication.v1;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.FieldNamingPolicy;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -29,7 +32,7 @@ import com.environment.domain.User;
 @RestController
 public class CreateUser {    
     @PostMapping("/api/v1/user")
-    public String index(@Valid @RequestBody String body) {
+    public ResponseEntity<String> index(@Valid @RequestBody String body) {
 
         
         Logger log = Logger.getGlobal();
@@ -48,16 +51,7 @@ public class CreateUser {
         // Gera um UUID aleatório
         user.setUuid(UUID.randomUUID().toString());
         
-        Boolean check = user.passwordCheck();
-        if (!check) {
-            return "Senhas incompativeis";
-        }
-        user.passwordHash();
-
-
-        // System.out.println("req: "+cipher);
-
-        // user.extract();
+        
 
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         for (ConstraintViolation<User> violation : violations) {
@@ -65,12 +59,17 @@ public class CreateUser {
             // log.warning(violation.getMessage());
             System.out.println("validation: "+violation.getMessage());
         }
-        System.out.println("Test");
 
         Map<String, String> validate = user.validate();
-        System.out.println("validation: "+validate);
+        if (!Boolean.parseBoolean(validate.get("status"))) {
+            String error = gson.toJson(validate);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
 
-        return "CREATE USER";
+        user.passwordHash();
+        user.fullName = user.firstName+" "+user.lastName;
+        return ResponseEntity.status(HttpStatus.CREATED).body("");
+
     }
     
 }
