@@ -46,8 +46,14 @@ public class CreateUser {
 
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
-        // Preenche a classe user com body
         User user = gson.fromJson(body, User.class);
+        
+        Map<String, String> validate = user.validate();
+
+        ResponseWith responseWith = new ResponseWith(validate);
+
+
+        // Preenche a classe user com body
 
         // Gera um UUID aleatório
         user.setUuid(UUID.randomUUID().toString());
@@ -61,16 +67,16 @@ public class CreateUser {
             System.out.println("validation: "+violation.getMessage());
         }
 
-        Map<String, String> validate = user.validate();
-        if (!Boolean.parseBoolean(validate.get("status"))) {
-            String error = gson.toJson(validate);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-        }
+        // if (!Boolean.parseBoolean(validate.get("status"))) {
+        //     String error = gson.toJson(validate);
+        //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        // }
 
-        String responseParse = gson.toJson(ResponseWith.response(validate));
+        // String responseParse = gson.toJson(ResponseWith.response(validate));
         user.passwordHash();
         user.fullName = user.firstName+" "+user.lastName;
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseParse);
+        // return ResponseEntity.status(HttpStatus.CREATED).body(responseParse);
+        return responseWith.json(validate);
 
     }
     
