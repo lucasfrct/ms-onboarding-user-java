@@ -25,6 +25,7 @@ import javax.validation.Validator;
 import javax.validation.Valid;
 
 import com.environment.domain.User;
+import com.environment.infrastructure.utils.ResponseWith;
 
 /**
  * Cria um novo usuario
@@ -66,9 +67,10 @@ public class CreateUser {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
 
+        String responseParse = gson.toJson(ResponseWith.response(validate));
         user.passwordHash();
         user.fullName = user.firstName+" "+user.lastName;
-        return ResponseEntity.status(HttpStatus.CREATED).body("");
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseParse);
 
     }
     

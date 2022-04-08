@@ -128,8 +128,9 @@ public class User {
         // verifica se o telefone tem algum caractere invalido
         Boolean check = this.phone.matches(".*[a-zA-Z].*");
         if (check) {
-            valid.put("status", "false");
+            valid.put("status", "400");
             valid.put("message", "Phone contém caractéres inválidos!");
+            valid.put("code", "ONU001");
             return valid;
         }
 
@@ -139,6 +140,7 @@ public class User {
         if (size != 11) {
             valid.put("status", "false");
             valid.put("message", "Phone tem tamanho inválido!");
+            valid.put("code", "ONU002");
             return valid;
         }
 
