@@ -48,17 +48,10 @@ public class CreateUser {
 
         User user = gson.fromJson(body, User.class);
         
-        Map<String, String> validate = user.validate();
-
-        ResponseWith responseWith = new ResponseWith(validate);
-
-
-        // Preenche a classe user com body
-
         // Gera um UUID aleatório
         user.setUuid(UUID.randomUUID().toString());
-        
-        
+
+        ResponseWith responseWith = new ResponseWith(user.validate());
 
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         for (ConstraintViolation<User> violation : violations) {
@@ -67,17 +60,12 @@ public class CreateUser {
             System.out.println("validation: "+violation.getMessage());
         }
 
-        // if (!Boolean.parseBoolean(validate.get("status"))) {
-        //     String error = gson.toJson(validate);
-        //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-        // }
-
         // String responseParse = gson.toJson(ResponseWith.response(validate));
         user.passwordHash();
         user.fullName = user.firstName+" "+user.lastName;
-        // return ResponseEntity.status(HttpStatus.CREATED).body(responseParse);
-        return responseWith.json(validate);
 
+        // return ResponseEntity.status(HttpStatus.CREATED).body(responseParse);
+        return responseWith.json();
     }
     
 }

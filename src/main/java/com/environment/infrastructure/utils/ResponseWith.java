@@ -10,19 +10,45 @@ import org.springframework.http.ResponseEntity;
 
 public class ResponseWith {
 
+    Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+    
     int statusNum;
+    Map<String, String> response;
     
     public ResponseWith(Map<String, String> response) {
-        statusNum = Integer.parseInt(response.get("status"));
-        
+        this.statusNum = Integer.parseInt(response.get("status"));
+        this.response = response;
     }
-    
-    // handleStatus(int status)
-    //      return HttpStatus.BAD_REQUEST   (400)
-    //      return HttpStatus.OK            (200)
-    //      return HttpStatus.NOT_FOUND     (404)
     public HttpStatus handleStatus(int statusNum) {
-
+        
+        if (statusNum == 200) {
+            return HttpStatus.OK;
+        }
+        
+        if (statusNum == 201) {
+            return HttpStatus.CREATED;
+        }
+        
+        if (statusNum == 204) {
+            return HttpStatus.NO_CONTENT;
+        }
+        
+        if (statusNum == 400) {
+            return HttpStatus.BAD_REQUEST;
+        }
+        
+        if (statusNum == 403) {
+            return HttpStatus.FORBIDDEN;
+        }
+        
+        if (statusNum == 404) {
+            return HttpStatus.NOT_FOUND;
+        }
+        
+        if (statusNum == 408) {
+            return HttpStatus.REQUEST_TIMEOUT;
+        }
+        
         if (statusNum >= 100 && statusNum < 200) {
             return HttpStatus.CONTINUE;
         }
@@ -32,7 +58,7 @@ public class ResponseWith {
         }
         
         if (statusNum >= 300 && statusNum < 400) {
-            return HttpStatus.MULTIPLE_CHOICES;
+            return HttpStatus.PERMANENT_REDIRECT;
         }
         
         if (statusNum >= 400 && statusNum < 500) {
@@ -41,20 +67,45 @@ public class ResponseWith {
         
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
-    
-    public ResponseEntity<String> json(Map<String, String> validate) {
+
+    public Object handleMessage(Map<String, String> response) {
         
-        return ResponseEntity.status(handleStatus(this.statusNum)).body(handleMessage(validate.get("code"), validate.get("message")));
+        Object message = "";
+
+        if (this.statusNum == 200) {
+
+            if (response.containsKey("data")) {
+                message = response.get("data");
+            }
+            return message;
+        }
+
+        if (this.statusNum == 201 || this.statusNum == 204) {
+            return message;
+        }
+
+        if (this.statusNum >= 400) {
+
+            Map<String, String> messageError = new HashMap<String, String>();
+
+            if (response.containsKey("code")) {
+                messageError.put("code", response.get("code"));
+            }
+
+            if (response.containsKey("message")) {
+                messageError.put("message", response.get("message"));                
+            }
+
+            return messageError;
+        }
+
+        return message;
     }
-    
-    // { status = 200; code = ONU000; message = "" }
-    // handleMessage(String code, String message)
-    //      return { "code": "ONU", "message": "" } (JSON)
-    public String handleMessage(String code, String message) {
-        String body = String.format("%s, %s", code, message);
-        return body;
+
+    public ResponseEntity<String> json() {
+        
+        String body = gson.toJson(handleMessage(this.response));        
+        
+        return ResponseEntity.status(handleStatus(this.statusNum)).body(body);
     }
 }
-
-// ResponseWith res = new ResponseWith(map)
-// res.response();

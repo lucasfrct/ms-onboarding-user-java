@@ -92,13 +92,13 @@ public class User {
 
         Boolean check = this.firstName.matches(".*[0-9].*");
         if (check) {
-            valid.put("status", "false");
+            valid.put("status", "400");
+            valid.put("code", "ONU001");
             valid.put("message", "First Name contém caracteres inválidos!");
             return valid;
         }
 
-        valid.put("status", "true");
-        valid.put("message", "");
+        valid.put("status", "200");
         return valid;
     }
 
@@ -108,13 +108,13 @@ public class User {
 
         Boolean check = this.lastName.matches(".*[0-9].*");
         if (check) {
-            valid.put("status", "false");
+            valid.put("status", "400");
+            valid.put("code", "ONU002");
             valid.put("message", "Last Name contém caracteres inválidos!");
             return valid;
         }
 
-        valid.put("status", "true");
-        valid.put("message", "");
+        valid.put("status", "200");
         return valid;
     }
 
@@ -130,7 +130,7 @@ public class User {
         if (check) {
             valid.put("status", "400");
             valid.put("message", "Phone contém caractéres inválidos!");
-            valid.put("code", "ONU001");
+            valid.put("code", "ONU003");
             return valid;
         }
 
@@ -138,14 +138,13 @@ public class User {
         String num = this.phone.replaceAll("[^0-9]", "");
         int size = num.length();
         if (size != 11) {
-            valid.put("status", "false");
+            valid.put("status", "400");
             valid.put("message", "Phone tem tamanho inválido!");
-            valid.put("code", "ONU002");
+            valid.put("code", "ONU004");
             return valid;
         }
 
-        valid.put("status", "true");
-        valid.put("message", "");
+        valid.put("status", "200");
         return valid;
     }
 
@@ -159,20 +158,21 @@ public class User {
 
         Boolean check = this.passwordCheck();
         if (!check) {
-            valid.put("status", "false");
+            valid.put("status", "400");
+            valid.put("code", "ONU005");
             valid.put("message", "Senhas incompativeis");
             return valid;
         }
 
         Boolean checkRegex = matcher.matches();
         if (!checkRegex) {
-            valid.put("status", "false");
+            valid.put("status", "400");
+            valid.put("code", "ONU006");
             valid.put("message", "O password deve conter no minimo 8 e no maximo 20 caracteres, pelo menos uma letra maiúscula, pelo menos um letra minúscula e um caractere especial!");
             return valid;
         }
 
-        valid.put("status", "true");
-        valid.put("message", "");
+        valid.put("status", "200");
         return valid;
     }
 
@@ -182,13 +182,13 @@ public class User {
 
         Boolean check = this.uuid.length() == 36;
         if (!check) {
-            valid.put("status", "false");
+            valid.put("status", "400");
+            valid.put("code", "ONU007");
             valid.put("message", "Serviço indisponível. Tente novamente em instantes.");
             return valid;
         }
         
-        valid.put("status", "true");
-        valid.put("message", "");
+        valid.put("status", "200");
         return valid;
     }
 
@@ -196,33 +196,32 @@ public class User {
     public Map<String, String> validate() {
 
         Map<String, String> firstNameValid = this.validateFirstName();
-        if (!Boolean.parseBoolean(firstNameValid.get("status"))) {
+        if (Integer.parseInt(firstNameValid.get("status")) >= 400) {
             return firstNameValid;
         }
 
         Map<String, String> lastNameValid = this.validateLastName();
-        if (!Boolean.parseBoolean(lastNameValid.get("status"))) {
+        if (Integer.parseInt(lastNameValid.get("status")) >= 400) {
             return lastNameValid;
         }
 
         Map<String, String> phoneValid = this.validatePhone();
-        if (!Boolean.parseBoolean(phoneValid.get("status"))) {
+        if (Integer.parseInt(phoneValid.get("status")) >= 400) {
             return phoneValid;
         }
 
         Map<String, String> passwordValid = this.validatePassword();
-        if (!Boolean.parseBoolean(passwordValid.get("status"))) {
+        if (Integer.parseInt(passwordValid.get("status")) >= 400) {
             return passwordValid;
         }
 
         Map<String, String> uuidValid = this.validateUuid();
-        if (!Boolean.parseBoolean(uuidValid.get("status"))) {
+        if (Integer.parseInt(uuidValid.get("status")) >= 400) {
             return uuidValid;
         }
         
         Map<String, String> result = new HashMap<String, String>();
-        result.put("status", "true");
-        result.put("message", ""); 
+        result.put("status", "200");
         return result;
     }
     
