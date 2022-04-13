@@ -1,15 +1,15 @@
 package com.environment.aplication.v1;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.FieldNamingPolicy;
 
-import java.util.HashMap;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -33,6 +33,7 @@ import com.environment.infrastructure.utils.ResponseWith;
 @RestController
 public class CreateUser {    
     @PostMapping("/api/v1/user")
+    // @ResponseMiddleware
     public ResponseEntity<String> index(@Valid @RequestBody String body) {
 
         
@@ -51,20 +52,21 @@ public class CreateUser {
         // Gera um UUID aleatório
         user.setUuid(UUID.randomUUID().toString());
 
-        ResponseWith responseWith = new ResponseWith(user.validate());
-
+        
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         for (ConstraintViolation<User> violation : violations) {
-            // log.error(violation.getMessage()); 
-            // log.warning(violation.getMessage());
-            System.out.println("validation: "+violation.getMessage());
+            
+            Type errorType = new TypeToken<Map<String, String>>() {}.getType();
+            Map<String, String> erro = gson.fromJson(violation.getMessage(), errorType);
+            ResponseWith responseWith = new ResponseWith(erro);
+            return responseWith.json();
+            
         }
-
-        // String responseParse = gson.toJson(ResponseWith.response(validate));
+        
+        ResponseWith responseWith = new ResponseWith(user.validate());
         user.passwordHash();
         user.fullName = user.firstName+" "+user.lastName;
 
-        // return ResponseEntity.status(HttpStatus.CREATED).body(responseParse);
         return responseWith.json();
     }
     

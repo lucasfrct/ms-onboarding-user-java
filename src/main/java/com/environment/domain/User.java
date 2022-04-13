@@ -4,7 +4,6 @@ import com.environment.infrastructure.utils.SHA512;
 
 import javax.validation.constraints.Size;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -12,9 +11,6 @@ import java.util.regex.Pattern;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-
-import com.environment.infrastructure.utils.RemoveChar;
-
 /**
  * Classe responsável à definir e gerenciar o usuário
  * 
@@ -23,25 +19,24 @@ public class User {
 
     String uuid;
 
-    @Size(min = 3, max = 30, message = "firstName must be between 3 and 30 characters")
-    @NotEmpty(message = "firstName cannot be null")
-    public String firstName; // min 3 - max 30
+    @Size(min = 3, max = 30, message = "{'status': '400', 'code': 'ONU008', 'message': 'Nome deve conter entre 3 e 30 caracteres!'}")
+    @NotEmpty(message = "{'status': '400', 'code': 'ONU009', 'message': 'Nome nao pode ser vazio!'}")
+    public String firstName;
     
-    @Size(min = 3, max = 30, message = "lastName must be between 3 and 30 characters")
-    @NotEmpty(message = "lastName cannot be null")
-    public String lastName; // min 3 - max 30
+    @Size(min = 3, max = 30, message = "{'status': '400', 'code': 'ONU010', 'message': 'Sobrenome deve conter entre 3 e 30 caracteres!'}")
+    @NotEmpty(message = "{'status': '400', 'code': 'ONU011', 'message': 'Sobrenome nao pode ser vazio!'}")
+    public String lastName;
 
     public String fullName;
     
-    @Size(min = 11, max = 15, message = "phone must be 11 characters long")
-    @RemoveChar
-    String phone; // length 11, Só numeros
+    @Size(min = 11, max = 15, message = "{'status': '400', 'code': 'ONU012', 'message': 'Numero deve ter o seguinte formato: (xx) xxxxx-xxxx'}")
+    String phone;
 
-    @Email
-    String email; // alphanumerico, has @, has .com
+    @Email(message = "{'status': '400', 'code': 'ONU013', 'message': 'Email invalido!'}")
+    String email;
 
-    @Size(min = 8, max = 20, message = "password deve conter no minimo 8 e no maximo 20 caracteres!")
-    String password; // uppercase, lowercase, num, special, min 8
+    @Size(min = 8, max = 20, message = "{'status': '400', 'code': 'ONU014', 'message': 'password deve conter no minimo 8 e no maximo 20 caracteres!'}")
+    String password;
     String confirmPassword;
     String salt;
     String passwordHash;
@@ -221,7 +216,7 @@ public class User {
         }
         
         Map<String, String> result = new HashMap<String, String>();
-        result.put("status", "200");
+        result.put("status", "201");
         return result;
     }
     
