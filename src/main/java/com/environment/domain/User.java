@@ -2,6 +2,9 @@ package com.environment.domain;
 
 import com.environment.infrastructure.utils.SHA512;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.validation.constraints.Size;
 
 import java.util.HashMap;
@@ -18,6 +21,9 @@ import javax.validation.constraints.NotEmpty;
 public class User {
 
     String uuid;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
+
 
     @Size(min = 3, max = 30, message = "{'status': '400', 'code': 'ONU008', 'message': 'Nome deve conter entre 3 e 30 caracteres!'}")
     @NotEmpty(message = "{'status': '400', 'code': 'ONU009', 'message': 'Nome nao pode ser vazio!'}")
@@ -50,7 +56,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
-        this.salt = salt;
+        this.salt = salt;        
     }
 
     public String getUuid() {
@@ -87,6 +93,7 @@ public class User {
 
         Boolean check = this.firstName.matches(".*[0-9].*");
         if (check) {
+            this.LOGGER.info("", check);
             valid.put("status", "400");
             valid.put("code", "ONU001");
             valid.put("message", "First Name contém caracteres inválidos!");

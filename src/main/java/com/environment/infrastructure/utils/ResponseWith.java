@@ -16,8 +16,10 @@ public class ResponseWith {
     Map<String, String> response;
     
     public ResponseWith(Map<String, String> response) {
-        this.statusNum = Integer.parseInt(response.get("status"));
-        this.response = response;
+        if (response.containsKey("status")) {
+            this.statusNum = Integer.parseInt(response.get("status"));
+            this.response = response;            
+        }
     }
     public HttpStatus handleStatus(int statusNum) {
         
