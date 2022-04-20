@@ -8,7 +8,12 @@ import com.google.gson.FieldNamingPolicy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ResponseWith {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResponseWith.class);
 
     Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
     
@@ -16,9 +21,25 @@ public class ResponseWith {
     Map<String, String> response;
     
     public ResponseWith(Map<String, String> response) {
-        if (response.containsKey("status")) {
-            this.statusNum = Integer.parseInt(response.get("status"));
-            this.response = response;            
+        try {
+            if (response.containsKey("status")) {
+                this.statusNum = Integer.parseInt(response.get("status"));
+                this.response = response;            
+            } else {
+                throw new Exception("erro ao converter status");
+            }
+            
+        } catch (Exception e) {
+            this.LOGGER.error("erro ao converter status", e);
+
+            Map<String, String> valid = new HashMap<String, String>();
+
+            valid.put("status", "500");
+            valid.put("code", "ONU015");
+            valid.put("message", "Serviço indisponível no momento, tente mais tarde!");
+
+            this.statusNum = 500;
+            this.response = valid;
         }
     }
     public HttpStatus handleStatus(int statusNum) {
@@ -105,9 +126,25 @@ public class ResponseWith {
     }
 
     public ResponseEntity<String> json() {
+        try {
+            String body = gson.toJson(handleMessage(this.response));        
+            return ResponseEntity.status(handleStatus(this.statusNum)).body(body);            
+
+        } catch (Exception e) {
+            this.LOGGER.error("", e);
+
+            Map<String, String> valid = new HashMap<String, String>();
+
+            valid.put("status", "500");
+            valid.put("code", "ONU016");
+            valid.put("message", "Serviço indisponível no momento, tente mais tarde!");
+
+            this.statusNum = 500;
+            this.response = valid;
+
+            String body = gson.toJson(handleMessage(this.response));        
+            return ResponseEntity.status(handleStatus(this.statusNum)).body(body);
+        }
         
-        String body = gson.toJson(handleMessage(this.response));        
-        
-        return ResponseEntity.status(handleStatus(this.statusNum)).body(body);
     }
 }

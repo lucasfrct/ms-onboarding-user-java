@@ -93,7 +93,7 @@ public class User {
 
         Boolean check = this.firstName.matches(".*[0-9].*");
         if (check) {
-            this.LOGGER.info("", check);
+            this.LOGGER.error("first name contem caracteres invalidos!", check);
             valid.put("status", "400");
             valid.put("code", "ONU001");
             valid.put("message", "First Name contém caracteres inválidos!");
@@ -110,6 +110,7 @@ public class User {
 
         Boolean check = this.lastName.matches(".*[0-9].*");
         if (check) {
+            this.LOGGER.error("last name contem caracteres invalidos!", check);
             valid.put("status", "400");
             valid.put("code", "ONU002");
             valid.put("message", "Last Name contém caracteres inválidos!");
@@ -130,6 +131,7 @@ public class User {
         // verifica se o telefone tem algum caractere invalido
         Boolean check = this.phone.matches(".*[a-zA-Z].*");
         if (check) {
+            this.LOGGER.error("phone contem caracteres invalidos!", check);
             valid.put("status", "400");
             valid.put("message", "Phone contém caractéres inválidos!");
             valid.put("code", "ONU003");
@@ -140,6 +142,7 @@ public class User {
         String num = this.phone.replaceAll("[^0-9]", "");
         int size = num.length();
         if (size != 11) {
+            this.LOGGER.error("phone tem tamanho invalido!", size);
             valid.put("status", "400");
             valid.put("message", "Phone tem tamanho inválido!");
             valid.put("code", "ONU004");
@@ -160,6 +163,7 @@ public class User {
 
         Boolean check = this.passwordCheck();
         if (!check) {
+            this.LOGGER.error("senhas incompativeis", check);
             valid.put("status", "400");
             valid.put("code", "ONU005");
             valid.put("message", "Senhas incompativeis");
@@ -168,6 +172,7 @@ public class User {
 
         Boolean checkRegex = matcher.matches();
         if (!checkRegex) {
+            this.LOGGER.error("o password deve conter no minimo 8 e no maximo 20 caracteres, pelo menos uma letra maiuscula, pelo menos um letra minuscula e um caractere especial!", checkRegex);
             valid.put("status", "400");
             valid.put("code", "ONU006");
             valid.put("message", "O password deve conter no minimo 8 e no maximo 20 caracteres, pelo menos uma letra maiúscula, pelo menos um letra minúscula e um caractere especial!");
@@ -184,6 +189,7 @@ public class User {
 
         Boolean check = this.uuid.length() == 36;
         if (!check) {
+            this.LOGGER.error("servico indisponivel. tente novamente em instantes.", check);
             valid.put("status", "400");
             valid.put("code", "ONU007");
             valid.put("message", "Serviço indisponível. Tente novamente em instantes.");
