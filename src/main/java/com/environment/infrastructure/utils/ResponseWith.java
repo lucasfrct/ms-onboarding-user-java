@@ -22,12 +22,12 @@ public class ResponseWith {
     
     public ResponseWith(Map<String, String> response) {
         try {
-            if (response.containsKey("status")) {
-                this.statusNum = Integer.parseInt(response.get("status"));
-                this.response = response;            
-            } else {
+            if (!response.containsKey("status")) {
                 throw new Exception("erro ao converter status");
             }
+
+            this.statusNum = Integer.parseInt(response.get("status"));
+            this.response = response;
             
         } catch (Exception e) {
             this.LOGGER.error("erro ao converter status", e);
@@ -131,7 +131,7 @@ public class ResponseWith {
             return ResponseEntity.status(handleStatus(this.statusNum)).body(body);            
 
         } catch (Exception e) {
-            this.LOGGER.error("", e);
+            this.LOGGER.error("erro ao converter para json", e);
 
             Map<String, String> valid = new HashMap<String, String>();
 

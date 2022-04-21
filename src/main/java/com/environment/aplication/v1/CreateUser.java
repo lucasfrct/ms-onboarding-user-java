@@ -27,6 +27,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.Valid;
 
+import com.environment.infrastructure.repository.UserRepository;
 import com.environment.infrastructure.utils.ResponseWith;
 import com.environment.domain.User;
 
@@ -41,9 +42,7 @@ public class CreateUser {
     @PostMapping("/api/v1/user")
     public ResponseEntity<String> index(@Valid @RequestBody String body, HttpServletRequest servletRequest) {
         try {
-            throw new Exception("erro ao processar criacao do usuario");
-            // return ResponseEntity.status(handleStatus().body(body);
-            
+                        
             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
             Validator validator = factory.getValidator();
             
@@ -66,28 +65,38 @@ public class CreateUser {
                 return responseWith.json();
                 
             }
-            
-            // valida o usuario
-            ResponseWith responseWith = new ResponseWith(user.validate());
 
+            // valida o usuario
+            Map<String, String> valid = user.validate();
+            if (valid.get("status") != "201") {
+                ResponseWith responseWith = new ResponseWith(valid);
+                return responseWith.json();
+            }
+            
             // criptografa a senha
             user.passwordHash();
-
+            
             // monta o fullName
             user.fullName = user.firstName+" "+user.lastName;
             
+            // salvando no banco de dados
+            UserRepository userRepository = new UserRepository(user);
+            Map<String, String> result = userRepository.save();
+            
+            // valida o usuario
+            ResponseWith responseWith = new ResponseWith(result);
             return responseWith.json();
 
         } catch (Exception e) {
             this.LOGGER.error("erro ao processar criacao do usuario", e);
 
-            Map<String, String> valid = new HashMap<String, String>();
+            Map<String, String> response = new HashMap<String, String>();
 
-            valid.put("status", "500");
-            valid.put("code", "ONU017");
-            valid.put("message", "Serviço indisponível no momento, tente mais tarde!");
+            response.put("status", "500");
+            response.put("code", "ONU017");
+            response.put("message", "Serviço indisponível no momento, tente mais tarde!");
 
-            ResponseWith responseWith = new ResponseWith(valid);
+            ResponseWith responseWith = new ResponseWith(response);
             return responseWith.json();
 
         }
