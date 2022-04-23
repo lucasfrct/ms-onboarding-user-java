@@ -1,5 +1,6 @@
 package com.environment.domain;
 
+import com.environment.infrastructure.utils.ResponseWith;
 import com.environment.infrastructure.utils.SHA512;
 
 import org.slf4j.Logger;
@@ -58,21 +59,41 @@ public class User {
         this.confirmPassword = confirmPassword;
         this.salt = salt;        
     }
+    
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
     public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public String getFirstName() {
+        return firstName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    
     public String getSalt() {
         return salt;
     }
 
-    public String setSalt(String salt) {
-        return this.salt = salt;
+    public String getPasswordHash() {
+        return this.passwordHash;
     }
 
     public String getPassword() {
@@ -83,10 +104,6 @@ public class User {
         this.password = password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
     public Map<String, String> validateFirstName() {
 
         Map<String, String> valid = new HashMap<String, String>();
@@ -94,10 +111,7 @@ public class User {
         Boolean check = this.firstName.matches(".*[0-9].*");
         if (check) {
             this.LOGGER.error("first name contem caracteres invalidos!", check);
-            valid.put("status", "400");
-            valid.put("code", "ONU001");
-            valid.put("message", "First Name contém caracteres inválidos!");
-            return valid;
+            return ResponseWith.map("400", "ONU001", "First Name contém caracteres inválidos!");
         }
 
         valid.put("status", "200");
@@ -105,18 +119,15 @@ public class User {
     }
 
     public Map<String, String> validateLastName() {
-
-        Map<String, String> valid = new HashMap<String, String>();
-
+        
         Boolean check = this.lastName.matches(".*[0-9].*");
         if (check) {
             this.LOGGER.error("last name contem caracteres invalidos!", check);
-            valid.put("status", "400");
-            valid.put("code", "ONU002");
-            valid.put("message", "Last Name contém caracteres inválidos!");
-            return valid;
+            return ResponseWith.map("400", "ONU002", "Last Name contém caracteres inválidos!");
+            
         }
 
+        Map<String, String> valid = new HashMap<String, String>();
         valid.put("status", "200");
         return valid;
     }
@@ -132,10 +143,8 @@ public class User {
         Boolean check = this.phone.matches(".*[a-zA-Z].*");
         if (check) {
             this.LOGGER.error("phone contem caracteres invalidos!", check);
-            valid.put("status", "400");
-            valid.put("message", "Phone contém caractéres inválidos!");
-            valid.put("code", "ONU003");
-            return valid;
+            return ResponseWith.map("400", "ONU003", "Phone contém caracteres inválidos!");
+
         }
 
         // verifica se o telefone tem tamanho diferente de 11
@@ -143,10 +152,8 @@ public class User {
         int size = num.length();
         if (size != 11) {
             this.LOGGER.error("phone tem tamanho invalido!", size);
-            valid.put("status", "400");
-            valid.put("message", "Phone tem tamanho inválido!");
-            valid.put("code", "ONU004");
-            return valid;
+            return ResponseWith.map("400", "ONU004", "Phone tem tamanho inválido!");
+
         }
 
         valid.put("status", "200");
@@ -164,19 +171,15 @@ public class User {
         Boolean check = this.passwordCheck();
         if (!check) {
             this.LOGGER.error("senhas incompativeis", check);
-            valid.put("status", "400");
-            valid.put("code", "ONU005");
-            valid.put("message", "Senhas incompativeis");
-            return valid;
+            return ResponseWith.map("400", "ONU005", "Senhas incompativeis");
+
         }
 
         Boolean checkRegex = matcher.matches();
         if (!checkRegex) {
             this.LOGGER.error("o password deve conter no minimo 8 e no maximo 20 caracteres, pelo menos uma letra maiuscula, pelo menos um letra minuscula e um caractere especial!", checkRegex);
-            valid.put("status", "400");
-            valid.put("code", "ONU006");
-            valid.put("message", "O password deve conter no minimo 8 e no maximo 20 caracteres, pelo menos uma letra maiúscula, pelo menos um letra minúscula e um caractere especial!");
-            return valid;
+            return ResponseWith.map("400", "ONU006", "O password deve conter no minimo 8 e no maximo 20 caracteres, pelo menos uma letra maiúscula, pelo menos um letra minúscula e um caractere especial!");
+
         }
 
         valid.put("status", "200");
@@ -190,10 +193,8 @@ public class User {
         Boolean check = this.uuid.length() == 36;
         if (!check) {
             this.LOGGER.error("servico indisponivel. tente novamente em instantes.", check);
-            valid.put("status", "400");
-            valid.put("code", "ONU007");
-            valid.put("message", "Serviço indisponível. Tente novamente em instantes.");
-            return valid;
+            return ResponseWith.map("400", "ONU007", "Serviço indisponível. Tente novamente em instantes.");
+
         }
         
         valid.put("status", "200");
@@ -229,7 +230,7 @@ public class User {
         }
         
         Map<String, String> result = new HashMap<String, String>();
-        result.put("status", "201");
+        result.put("status", "200");
         return result;
     }
     

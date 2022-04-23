@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
-// ONU017
+// ONU018
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan

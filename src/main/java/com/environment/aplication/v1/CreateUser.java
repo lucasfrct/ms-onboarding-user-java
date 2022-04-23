@@ -11,7 +11,6 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.FieldNamingPolicy;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -42,6 +41,9 @@ public class CreateUser {
     @PostMapping("/api/v1/user")
     public ResponseEntity<String> index(@Valid @RequestBody String body, HttpServletRequest servletRequest) {
         try {
+            // if (true) {
+            //     throw new Exception("erro ao converter status");
+            // }
                         
             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
             Validator validator = factory.getValidator();
@@ -61,16 +63,14 @@ public class CreateUser {
                 // cria uma estrutura do tipo mapa para cada violacao e gera uma resposta padrao
                 Type errorType = new TypeToken<Map<String, String>>() {}.getType();
                 Map<String, String> erro = gson.fromJson(violation.getMessage(), errorType);
-                ResponseWith responseWith = new ResponseWith(erro);
-                return responseWith.json();
+                return ResponseWith.json(erro);
                 
             }
 
             // valida o usuario
             Map<String, String> valid = user.validate();
-            if (valid.get("status") != "201") {
-                ResponseWith responseWith = new ResponseWith(valid);
-                return responseWith.json();
+            if (valid.get("status") != "200") {
+                return ResponseWith.json(valid);
             }
             
             // criptografa a senha
@@ -84,20 +84,17 @@ public class CreateUser {
             Map<String, String> result = userRepository.save();
             
             // valida o usuario
-            ResponseWith responseWith = new ResponseWith(result);
-            return responseWith.json();
+            return ResponseWith.json(result);
 
         } catch (Exception e) {
             this.LOGGER.error("erro ao processar criacao do usuario", e);
 
-            Map<String, String> response = new HashMap<String, String>();
-
-            response.put("status", "500");
-            response.put("code", "ONU017");
-            response.put("message", "Serviço indisponível no momento, tente mais tarde!");
-
-            ResponseWith responseWith = new ResponseWith(response);
-            return responseWith.json();
+            Map<String, String> response = ResponseWith.map(
+                "500", 
+                "ONU017", 
+                "Serviço indisponível no momento, tente mais tarde!"
+            );
+            return ResponseWith.json(response);
 
         }
     }

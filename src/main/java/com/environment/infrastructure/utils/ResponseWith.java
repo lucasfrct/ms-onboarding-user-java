@@ -21,7 +21,7 @@ public class ResponseWith {
     Map<String, String> response;
     
     public ResponseWith(Map<String, String> response) {
-        try {
+        try {            
             if (!response.containsKey("status")) {
                 throw new Exception("erro ao converter status");
             }
@@ -30,16 +30,11 @@ public class ResponseWith {
             this.response = response;
             
         } catch (Exception e) {
+            
             this.LOGGER.error("erro ao converter status", e);
 
-            Map<String, String> valid = new HashMap<String, String>();
-
-            valid.put("status", "500");
-            valid.put("code", "ONU015");
-            valid.put("message", "Serviço indisponível no momento, tente mais tarde!");
-
             this.statusNum = 500;
-            this.response = valid;
+            this.response = ResponseWith.map("500", "ONU015", "Serviço indisponível no momento, tente mais tarde!");
         }
     }
     public HttpStatus handleStatus(int statusNum) {
@@ -125,26 +120,34 @@ public class ResponseWith {
         return message;
     }
 
-    public ResponseEntity<String> json() {
+    public static ResponseEntity<String> json(Map<String, String> response) {
+        ResponseWith responseWith = new ResponseWith(response);
+
         try {
-            String body = gson.toJson(handleMessage(this.response));        
-            return ResponseEntity.status(handleStatus(this.statusNum)).body(body);            
+
+            String body = responseWith.gson.toJson(responseWith.handleMessage(responseWith.response));
+            return ResponseEntity.status(responseWith.handleStatus(responseWith.statusNum)).body(body);
 
         } catch (Exception e) {
-            this.LOGGER.error("erro ao converter para json", e);
+            responseWith.LOGGER.error("erro ao converter para json", e);
 
-            Map<String, String> valid = new HashMap<String, String>();
+            responseWith.statusNum = 500;
+            responseWith.response = ResponseWith.map("500", "ONU016", "Serviço indisponível no momento, tente mais tarde!");
 
-            valid.put("status", "500");
-            valid.put("code", "ONU016");
-            valid.put("message", "Serviço indisponível no momento, tente mais tarde!");
-
-            this.statusNum = 500;
-            this.response = valid;
-
-            String body = gson.toJson(handleMessage(this.response));        
-            return ResponseEntity.status(handleStatus(this.statusNum)).body(body);
+            String body = responseWith.gson.toJson(responseWith.handleMessage(responseWith.response));        
+            return ResponseEntity.status(responseWith.handleStatus(responseWith.statusNum)).body(body);
         }
         
+    }
+
+    public static Map<String, String> map(String status, String code, String message) {
+
+        Map<String, String> newMap = new HashMap<String, String>();
+        newMap.put("status", status);
+        newMap.put("code", code);
+        newMap.put("message", message);
+
+        return newMap;
+
     }
 }
