@@ -10,10 +10,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.FieldNamingPolicy;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.lang.reflect.Type;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ import javax.validation.Valid;
 import com.environment.infrastructure.repository.UserRepository;
 import com.environment.infrastructure.utils.ResponseWith;
 import com.environment.domain.User;
+import com.environment.infrastructure.utils.Connect;
 
 /**
  * Cria um novo usuario
@@ -82,6 +85,15 @@ public class CreateUser {
             // salvando no banco de dados
             UserRepository userRepository = new UserRepository(user);
             Map<String, String> result = userRepository.save();
+            // userRepository.userData.forEach((key, value) -> {
+            //     System.out.println(key + " => " + value);
+            // });
+
+            // conecta com o banoc de dados e insere um dados
+            Connect connect = new Connect();
+            System.out.println(connect);
+            // String dbStatus = connect.healthCheck();
+            // System.out.println("DB Health: "+ dbStatus);
             
             // valida o usuario
             return ResponseWith.json(result);
