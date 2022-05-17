@@ -1,62 +1,51 @@
 package com.environment.infrastructure.utils;
 
-import org.bson.Document;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-// import com.mongodb.client.result.InsertOneResult;
-
+import org.bson.Document;
+import com.mongodb.client.MongoCollection;
 
 public class Connect {
 
-    public String dataBaseName = "onboarding_user";
-
-    public String collectionName = "onboarding_user";
+    String databaseName = "onboarding_user";
+    String collectionName = "onboarding_user";
 
     MongoDatabase database;
+    MongoCollection<Document> collection;
 
     public Connect() {
-        try (MongoClient mongoClient = MongoClients.create(this.connectString())) {
-            System.out.println("Funfou!");
-        }
-       
+        this.getDatabase(this.databaseName);
+        this.getCollection(this.collectionName);
+        this.insert();
     }
 
-    public MongoCollection<Document> getCollection() {
-        return this.database.getCollection(this.collectionName);
+    public MongoClient client() {
+        MongoClientURI connectionString = new MongoClientURI(this.connectString());
+        MongoClient mongoClient = new MongoClient(connectionString);
+        return mongoClient;
+    }
+
+    public MongoDatabase getDatabase(String database) {
+        MongoClient mongoClient =this.client();
+        return this.database = mongoClient.getDatabase(database);
     }
 
     public String connectString() {
-        return "mongodb://development:Alterar123@127.0.0.1:27017/?maxPoolSize=20&w=majority";
+        return "mongodb://development:Alterar123@127.0.0.1:27017";
+    }
+
+    public MongoCollection<Document> getCollection(String collection) {
+        return this.collection = this.database.getCollection(collection);
     }
 
     public void insert() {
-        // try {
-        //     MongoCollection<Document> collection = this.getCollection();
-        //     InsertOneResult result = collection.insertOne(new Document()
-        //             .append("_id", new ObjectId())
-        //     System.out.println("Success! Inserted document id: " + result.getInsertedId());
-        // } catch (MongoException me) {
-        //     System.err.println("Unable to insert due to an error: " + me);
-        // }
+        this.collection.insertOne(new Document("name", "marcus FEIO!!!!"));
     }
 
     public String healthCheck() {
-        // Document serverStatus = this.database.runCommand(new Document("serverStatus", 1));
-        // System.out.println(serverStatus);
-        // Map connections = (Map) serverStatus.get("connections");
-        // Integer current = (Integer) connections.get("current");
-
-        // return String.valueOf(current);
         return "UP";
-
     }
  
 }
-// MongoClient mongoClient = new MongoClient();
-// MongoDatabase database = mongoClient.getDatabase("admin");
-// Document serverStatus = database.runCommand(new Document("serverStatus", 1));
-// Map connections = (Map) serverStatus.get("connections");
-// Integer current = (Integer) connections.get("current");

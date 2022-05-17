@@ -1,0 +1,54 @@
+{
+	"info": {
+		"_postman_id": "c9ee5c45-def3-4c9c-9794-52c42e20f469",
+		"name": "MS::Onboarding::User::Java",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api/v1/user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n    \"first_name\": \"Feio\",\r\n    \"last_name\": \"Muito\",\r\n    \"phone\": \"(21) 34567-8910\",\r\n    \"email\": \"FeiioLucas@Ugly.com\",\r\n    \"password\": \"Alterar123@\",\r\n    \"confirm_password\": \"Alterar123@\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}api/v1/user",
+					"host": [
+						"{{endpoint}}api"
+					],
+					"path": [
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{endpoint}}api/v1/users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{endpoint}}api/v1/users",
+					"host": [
+						"{{endpoint}}api"
+					],
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

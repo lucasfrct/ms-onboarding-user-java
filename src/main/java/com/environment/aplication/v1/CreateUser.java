@@ -85,9 +85,6 @@ public class CreateUser {
             // salvando no banco de dados
             UserRepository userRepository = new UserRepository(user);
             Map<String, String> result = userRepository.save();
-            // userRepository.userData.forEach((key, value) -> {
-            //     System.out.println(key + " => " + value);
-            // });
 
             // conecta com o banoc de dados e insere um dados
             Connect connect = new Connect();
