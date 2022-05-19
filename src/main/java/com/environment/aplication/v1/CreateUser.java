@@ -88,7 +88,9 @@ public class CreateUser {
 
             // conecta com o banoc de dados e insere um dados
             Connect connect = new Connect();
-            System.out.println(connect);
+            connect.insert(userRepository.userData);
+            // String timestamp = connect.healthCheck();
+            // System.out.println(timestamp);
             // String dbStatus = connect.healthCheck();
             // System.out.println("DB Health: "+ dbStatus);
             

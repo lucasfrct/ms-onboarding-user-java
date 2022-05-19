@@ -1,11 +1,25 @@
 package com.environment.infrastructure.utils;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.mongodb.MongoException;
+import org.bson.types.ObjectId;
 import com.mongodb.client.MongoCollection;
+// import com.mongodb.client.result.InsertOneResult;
+
+
 
 public class Connect {
 
@@ -18,7 +32,8 @@ public class Connect {
     public Connect() {
         this.getDatabase(this.databaseName);
         this.getCollection(this.collectionName);
-        this.insert();
+        this.healthCheck();
+        // this.insert();
     }
 
     public MongoClient client() {
@@ -28,7 +43,7 @@ public class Connect {
     }
 
     public MongoDatabase getDatabase(String database) {
-        MongoClient mongoClient =this.client();
+        MongoClient mongoClient = this.client();
         return this.database = mongoClient.getDatabase(database);
     }
 
@@ -40,11 +55,29 @@ public class Connect {
         return this.collection = this.database.getCollection(collection);
     }
 
-    public void insert() {
-        this.collection.insertOne(new Document("name", "marcus FEIO!!!!"));
+    public void insert(Map<String, String> documentMap) {
+        // this.collection.insertOne(new Document("name", "marcus FEIO!!!!"));
+        // this.collection.insertOne(new BasicDBObject(documentMap));
+
+        // try {
+        //         this.collection.insertOne(new Document()
+        //         .append("_id", new ObjectId())
+        //         .append("title", "Ski Bloopers")
+        //         .append("genres", Arrays.asList("Documentary", "Comedy")));
+        //     } catch (MongoException me) {
+        //         System.err.println("Unable to insert due to an error: " + me);
+        // }
     }
 
     public String healthCheck() {
+
+        // Document hello = new Document().append("ping", 1);
+        Document hello = new Document().append("buildInfo", 1);
+
+        Document result = this.database.runCommand( hello );
+        System.out.println("Command: "+result.toString());
+        
+        
         return "UP";
     }
  
