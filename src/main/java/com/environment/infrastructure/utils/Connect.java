@@ -5,13 +5,19 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 import com.mongodb.client.MongoDatabase;
+// import com.mongodb.client.
 import org.bson.Document;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.mongodb.MongoException;
@@ -71,14 +77,20 @@ public class Connect {
 
     public String healthCheck() {
 
-        // Document hello = new Document().append("ping", 1);
-        Document hello = new Document().append("buildInfo", 1);
+        Document hello = new Document().append("serverStatus", 1);
 
         Document result = this.database.runCommand( hello );
-        System.out.println("Command: "+result.toString());
+        System.out.println("Command: "+result.get("localTime")); 
         
+        String dateInString = result.get("localTime").toString();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM d kk:mm:ss z yyyy", Locale.ENGLISH);
+        LocalDate dateTime = LocalDate.parse(dateInString, formatter);
         
-        return "UP";
+        System.out.println("date: "+dateTime.parse("yyyy-mm-dd HH:mm:ss"));
+
+        // Thu May 19 23:31:15 BRT 2022
+        
+        return result.get("localTime").toString();
     }
  
 }
