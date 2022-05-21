@@ -110,7 +110,7 @@ public class User {
 
         Boolean check = this.firstName.matches(".*[0-9].*");
         if (check) {
-            this.LOGGER.error("first name contem caracteres invalidos!", check);
+            LOGGER.error("first name contem caracteres invalidos!", check);
             return ResponseWith.map("400", "ONU001", "First Name contém caracteres inválidos!");
         }
 
@@ -122,7 +122,7 @@ public class User {
         
         Boolean check = this.lastName.matches(".*[0-9].*");
         if (check) {
-            this.LOGGER.error("last name contem caracteres invalidos!", check);
+            LOGGER.error("last name contem caracteres invalidos!", check);
             return ResponseWith.map("400", "ONU002", "Last Name contém caracteres inválidos!");
             
         }
@@ -142,7 +142,7 @@ public class User {
         // verifica se o telefone tem algum caractere invalido
         Boolean check = this.phone.matches(".*[a-zA-Z].*");
         if (check) {
-            this.LOGGER.error("phone contem caracteres invalidos!", check);
+            LOGGER.error("phone contem caracteres invalidos!", check);
             return ResponseWith.map("400", "ONU003", "Phone contém caracteres inválidos!");
 
         }
@@ -151,7 +151,7 @@ public class User {
         String num = this.phone.replaceAll("[^0-9]", "");
         int size = num.length();
         if (size != 11) {
-            this.LOGGER.error("phone tem tamanho invalido!", size);
+            LOGGER.error("phone tem tamanho invalido!", size);
             return ResponseWith.map("400", "ONU004", "Phone tem tamanho inválido!");
 
         }
@@ -170,14 +170,14 @@ public class User {
 
         Boolean check = this.passwordCheck();
         if (!check) {
-            this.LOGGER.error("senhas incompativeis", check);
+            LOGGER.error("senhas incompativeis", check);
             return ResponseWith.map("400", "ONU005", "Senhas incompativeis");
 
         }
 
         Boolean checkRegex = matcher.matches();
         if (!checkRegex) {
-            this.LOGGER.error("o password deve conter no minimo 8 e no maximo 20 caracteres, pelo menos uma letra maiuscula, pelo menos um letra minuscula e um caractere especial!", checkRegex);
+            LOGGER.error("o password deve conter no minimo 8 e no maximo 20 caracteres, pelo menos uma letra maiuscula, pelo menos um letra minuscula e um caractere especial!", checkRegex);
             return ResponseWith.map("400", "ONU006", "O password deve conter no minimo 8 e no maximo 20 caracteres, pelo menos uma letra maiúscula, pelo menos um letra minúscula e um caractere especial!");
 
         }
@@ -192,7 +192,7 @@ public class User {
 
         Boolean check = this.uuid.length() == 36;
         if (!check) {
-            this.LOGGER.error("servico indisponivel. tente novamente em instantes.", check);
+            LOGGER.error("servico indisponivel. tente novamente em instantes.", check);
             return ResponseWith.map("400", "ONU007", "Serviço indisponível. Tente novamente em instantes.");
 
         }

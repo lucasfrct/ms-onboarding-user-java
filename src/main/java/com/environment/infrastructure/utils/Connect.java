@@ -5,7 +5,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 import com.mongodb.client.MongoDatabase;
-// import com.mongodb.client.
 import org.bson.Document;
 
 import java.text.SimpleDateFormat;
@@ -36,21 +35,41 @@ public class Connect {
     MongoCollection<Document> collection;
 
     public Connect() {
-        this.getDatabase(this.databaseName);
-        this.getCollection(this.collectionName);
-        this.healthCheck();
-        // this.insert();
+        try {
+            this.getDatabase(this.databaseName);
+            this.getCollection(this.collectionName);
+            this.healthCheck();
+            // this.insert();
+            
+        } catch (Exception e) {
+            return ;
+        }
     }
 
-    public MongoClient client() {
-        MongoClientURI connectionString = new MongoClientURI(this.connectString());
-        MongoClient mongoClient = new MongoClient(connectionString);
-        return mongoClient;
+    public MongoClient client() MongoException {
+        try {
+            MongoClientURI connectionString = new MongoClientURI(this.connectString());
+            MongoClient mongoClient = new MongoClient(connectionString);
+            return mongoClient;
+            
+        } catch (Exception e) {
+            return e;
+        }
     }
 
     public MongoDatabase getDatabase(String database) {
-        MongoClient mongoClient = this.client();
-        return this.database = mongoClient.getDatabase(database);
+        try {
+
+            if (database != null) {
+                
+            }
+
+            MongoClient mongoClient = this.client();
+            return this.database = mongoClient.getDatabase(database);
+            
+        } catch (Exception e) {
+            return e;
+        }
     }
 
     public String connectString() {
@@ -58,39 +77,48 @@ public class Connect {
     }
 
     public MongoCollection<Document> getCollection(String collection) {
-        return this.collection = this.database.getCollection(collection);
+        try {
+            return this.collection = this.database.getCollection(collection);
+            
+        } catch (Exception e) {
+            return e;
+        }
     }
 
     public void insert(Map<String, String> documentMap) {
-        // this.collection.insertOne(new Document("name", "marcus FEIO!!!!"));
-        // this.collection.insertOne(new BasicDBObject(documentMap));
-
-        // try {
-        //         this.collection.insertOne(new Document()
-        //         .append("_id", new ObjectId())
-        //         .append("title", "Ski Bloopers")
-        //         .append("genres", Arrays.asList("Documentary", "Comedy")));
-        //     } catch (MongoException me) {
-        //         System.err.println("Unable to insert due to an error: " + me);
-        // }
+        try {
+            // this.collection.insertOne(new Document("name", "marcus FEIO!!!!"));
+            // this.collection.insertOne(new BasicDBObject(documentMap));
+    
+            // try {
+            //         this.collection.insertOne(new Document()
+            //         .append("_id", new ObjectId())
+            //         .append("title", "Ski Bloopers")
+            //         .append("genres", Arrays.asList("Documentary", "Comedy")));
+            //     } catch (MongoException me) {
+            //         System.err.println("Unable to insert due to an error: " + me);
+            // }
+            
+        } catch (Exception e) {
+            return e;
+        }
     }
 
     public String healthCheck() {
-
-        Document hello = new Document().append("serverStatus", 1);
-
-        Document result = this.database.runCommand( hello );
-        System.out.println("Command: "+result.get("localTime")); 
-        
-        String dateInString = result.get("localTime").toString();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM d kk:mm:ss z yyyy", Locale.ENGLISH);
-        LocalDate dateTime = LocalDate.parse(dateInString, formatter);
-        
-        System.out.println("date: "+dateTime.parse("yyyy-mm-dd HH:mm:ss"));
-
-        // Thu May 19 23:31:15 BRT 2022
-        
-        return result.get("localTime").toString();
+        try {
+            Document hello = new Document().append("serverStatus", 1);
+    
+            Document result = this.database.runCommand( hello );
+            System.out.println("Command: "+result.get("localTime"));
+    
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+            String dateTime = formatter.format(result.get("localTime"));
+            
+            return dateTime;
+            
+        } catch (Exception e) {
+            return e;
+        }
     }
  
 }
