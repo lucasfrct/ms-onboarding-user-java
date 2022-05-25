@@ -44,7 +44,6 @@ public class Connect {
         try {
             this.getDatabase(this.databaseName);
             // this.getCollection(this.collectionName);
-            // this.healthCheck();
             // this.insert();
 
             System.out.println("*Connect*: ");
@@ -78,7 +77,7 @@ public class Connect {
             
         } catch (Exception e) {
             LOGGER.error("exception: ", e);
-            Error err = new Error("{ status: \"404\", code: \"ONU019\", message: \"nao foi possivel acessar o banco de dados\" }");
+            Error err = new Error("{ \"status\": \"404\", \"code\": \"ONU019\", \"message\": \"nao foi possivel acessar o banco de dados\" }");
             return this.database;
             
         }
@@ -98,6 +97,24 @@ public class Connect {
             return this.collection;
         }
     }
+    
+    public String health() {
+        // try {
+        //     Document hello = new Document().append("serverStatus", 1);    
+        //     Document result = this.database.runCommand( hello );
+    
+        //     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+        //     String dateTime = formatter.format(result.get("localTime"));
+            
+        //     return dateTime;
+            
+        // } catch (Exception e) {
+        //     LOGGER.error("exception: "+e);
+        //     return "dateTime";
+        // }
+
+        return "UP connect";
+    }
 
     public void insert(Map<String, String> documentMap) {
         try {
@@ -115,22 +132,6 @@ public class Connect {
             
         } catch (Exception e) {
             LOGGER.error("exception: ", e);
-        }
-    }
-
-    public String healthCheck() {
-        try {
-            Document hello = new Document().append("serverStatus", 1);    
-            Document result = this.database.runCommand( hello );
-    
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
-            String dateTime = formatter.format(result.get("localTime"));
-            
-            return dateTime;
-            
-        } catch (Exception e) {
-            LOGGER.error("exception: "+e);
-            return "dateTime";
         }
     }
  

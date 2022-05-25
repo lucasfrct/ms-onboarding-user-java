@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import com.environment.infrastructure.utils.ResponseWith;
 
 import java.util.Map;
-import java.util.HashMap;
 import org.slf4j.Logger;
+import java.util.HashMap;
 import org.slf4j.LoggerFactory;
 
 @RestController
@@ -43,7 +43,5 @@ public class HealthCheck {
             );
             return ResponseWith.json(response);
         }
-    }
-    
+    }    
 }
-
