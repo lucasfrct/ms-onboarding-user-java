@@ -7,14 +7,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.environment.infrastructure.utils.ResponseWith;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Locale;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,18 +21,15 @@ public class HealthCheck {
     public ResponseEntity<String> index() {
         try {
             Map<String, String> response = new HashMap<String, String>();
-            // SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             
             Connect connect = new Connect();
-            String status = connect.healthCheck();
 
-            // Date date = new Date();
-            // System.out.println("")
-            // thu may 19 23:27:46
-            // 2022-05-19 23:27:46
+            System.out.println("Heath** "+connect);
+
+            // String status = connect.healthCheck();
 
             response.put("status", "200");
-            response.put("data", "UP: "+status); 
+            response.put("data", "UP: "); 
 
             return ResponseWith.json(response);
             

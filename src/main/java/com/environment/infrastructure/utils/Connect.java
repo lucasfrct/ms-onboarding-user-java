@@ -18,6 +18,10 @@ import java.util.TimeZone;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.lang.Error;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.MongoException;
 import org.bson.types.ObjectId;
@@ -34,41 +38,49 @@ public class Connect {
     MongoDatabase database;
     MongoCollection<Document> collection;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Connect.class);
+
     public Connect() {
         try {
             this.getDatabase(this.databaseName);
-            this.getCollection(this.collectionName);
-            this.healthCheck();
+            // this.getCollection(this.collectionName);
+            // this.healthCheck();
             // this.insert();
+
+            System.out.println("*Connect*: ");
+
+            // return this;
             
         } catch (Exception e) {
-            return ;
+            LOGGER.error("exception: ", e);
+            // return ResponseWith.map(e.getStatus(), e.getCode(), e.getMessage());
         }
     }
 
-    public MongoClient client() MongoException {
+    public MongoClient client() {
         try {
             MongoClientURI connectionString = new MongoClientURI(this.connectString());
             MongoClient mongoClient = new MongoClient(connectionString);
             return mongoClient;
             
         } catch (Exception e) {
-            return e;
+            LOGGER.error("exception: ", e);
+            MongoClient mongoClient = new MongoClient();
+            return mongoClient;
+
         }
     }
 
     public MongoDatabase getDatabase(String database) {
         try {
-
-            if (database != null) {
-                
-            }
-
             MongoClient mongoClient = this.client();
             return this.database = mongoClient.getDatabase(database);
             
         } catch (Exception e) {
-            return e;
+            LOGGER.error("exception: ", e);
+            Error err = new Error("{ status: \"404\", code: \"ONU019\", message: \"nao foi possivel acessar o banco de dados\" }");
+            return this.database;
+            
         }
     }
 
@@ -81,7 +93,9 @@ public class Connect {
             return this.collection = this.database.getCollection(collection);
             
         } catch (Exception e) {
-            return e;
+            LOGGER.error("exception: ", e);
+            new Error("colecao nao encontrada");
+            return this.collection;
         }
     }
 
@@ -100,16 +114,14 @@ public class Connect {
             // }
             
         } catch (Exception e) {
-            return e;
+            LOGGER.error("exception: ", e);
         }
     }
 
     public String healthCheck() {
         try {
-            Document hello = new Document().append("serverStatus", 1);
-    
+            Document hello = new Document().append("serverStatus", 1);    
             Document result = this.database.runCommand( hello );
-            System.out.println("Command: "+result.get("localTime"));
     
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
             String dateTime = formatter.format(result.get("localTime"));
@@ -117,8 +129,12 @@ public class Connect {
             return dateTime;
             
         } catch (Exception e) {
-            return e;
+            LOGGER.error("exception: "+e);
+            return "dateTime";
         }
     }
  
 }
+
+// conn = new Connect();
+// db = conn.mongo();
