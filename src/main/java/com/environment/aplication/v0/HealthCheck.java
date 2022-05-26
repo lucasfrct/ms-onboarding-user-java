@@ -17,7 +17,7 @@ public class HealthCheck {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HealthCheck.class);
     
-    @RequestMapping("/mongo/health")
+    @RequestMapping("//mongo/health")
     public ResponseEntity<String> index() {
         try {
             Map<String, String> response = new HashMap<String, String>();
