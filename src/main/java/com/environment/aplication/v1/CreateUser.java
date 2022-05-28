@@ -13,8 +13,6 @@ import com.google.gson.FieldNamingPolicy;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.lang.reflect.Type;
 
 import org.slf4j.Logger;
@@ -31,7 +29,6 @@ import javax.validation.Valid;
 import com.environment.infrastructure.repository.UserRepository;
 import com.environment.infrastructure.utils.ResponseWith;
 import com.environment.domain.User;
-import com.environment.infrastructure.utils.Connect;
 
 /**
  * Cria um novo usuario
@@ -43,14 +40,9 @@ public class CreateUser {
 
     @PostMapping("/api/v1/user")
     public ResponseEntity<String> index(@Valid @RequestBody String body, HttpServletRequest servletRequest) {
-        try {
-            // if (true) {
-            //     throw new Exception("erro ao converter status");
-            // }
-                        
+        try {                       
             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-            Validator validator = factory.getValidator();
-            
+            Validator validator = factory.getValidator();            
             Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
             
             // preenche a classe do usuario
@@ -61,13 +53,9 @@ public class CreateUser {
             
             // recebe e trata as violacoes
             Set<ConstraintViolation<User>> violations = validator.validate(user);
-            for (ConstraintViolation<User> violation : violations) {
-                
-                // cria uma estrutura do tipo mapa para cada violacao e gera uma resposta padrao
+            for (ConstraintViolation<User> violation : violations) {                
                 Type errorType = new TypeToken<Map<String, String>>() {}.getType();
-                Map<String, String> erro = gson.fromJson(violation.getMessage(), errorType);
-                return ResponseWith.json(erro);
-                
+                return ResponseWith.json(gson.fromJson(violation.getMessage(), errorType));
             }
 
             // valida o usuario
@@ -83,30 +71,18 @@ public class CreateUser {
             user.fullName = user.firstName+" "+user.lastName;
             
             // salvando no banco de dados
-            UserRepository userRepository = new UserRepository(user);
-            Map<String, String> result = userRepository.save();
-
-            // conecta com o banoc de dados e insere um dados
-            Connect connect = new Connect();
-            connect.insert(userRepository.userData);
-            // String timestamp = connect.healthCheck();
-            // System.out.println(timestamp);
-            // String dbStatus = connect.healthCheck();
-            // System.out.println("DB Health: "+ dbStatus);
+            UserRepository userRepository = new UserRepository();
+            if (!userRepository.save(user)) {
+                LOGGER.error("erro ao salvar usuario");
+                return ResponseWith.json(ResponseWith.map("500", "ONU018", "Não foi possível salvar usuário na base de dados!"));
+            }
             
-            // valida o usuario
-            return ResponseWith.json(result);
+            // resposta de sucesso quando o usuario e criado
+            return ResponseWith.json(ResponseWith.result("201", ""));
 
         } catch (Exception e) {
             LOGGER.error("erro ao processar criacao do usuario", e);
-
-            Map<String, String> response = ResponseWith.map(
-                "500", 
-                "ONU017", 
-                "Serviço indisponível no momento, tente mais tarde!"
-            );
-            return ResponseWith.json(response);
-
+            return ResponseWith.json(ResponseWith.error("ONU017"));
         }
     }
     

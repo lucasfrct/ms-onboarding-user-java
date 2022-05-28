@@ -150,4 +150,24 @@ public class ResponseWith {
         return newMap;
 
     }
+
+    public static Map<String, String> error(String code) {
+
+        String status = "500";
+        String message = "Serviço indisponível no momento, tente mais tarde!";
+        return ResponseWith.map(status, code, message);
+
+    }
+
+    public static Map<String, String> result(String status, String data) {
+
+        Map<String, String> newMap = new HashMap<String, String>();
+        newMap.put("status", status);
+
+        if (!data.isEmpty()) {
+            newMap.put("data", data);            
+        }
+
+        return newMap;
+    }
 }

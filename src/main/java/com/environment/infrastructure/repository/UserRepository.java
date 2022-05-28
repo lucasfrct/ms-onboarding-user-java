@@ -13,6 +13,7 @@ import com.google.gson.FieldNamingPolicy;
 
 import com.environment.domain.User;
 import com.environment.infrastructure.utils.ResponseWith;
+import com.environment.infrastructure.utils.Connect;
 
 @Repository
 public class UserRepository {
@@ -24,36 +25,42 @@ public class UserRepository {
     public User user;
     public Map<String, String> userData = new HashMap<String, String>();
 
-    public UserRepository(User user) {
+    public UserRepository() {
+    };
+
+    public Boolean save(User user) {
 
         this.user = user;
 
-    };
-
-    public Map<String, String> save() {
         try {
             Map<String, String> userRepository = new HashMap<String, String>();
-
-            userRepository.put( "uuid" , user.getUuid());
+    
+            userRepository.put( "passwordHash" , user.getPasswordHash());
             userRepository.put( "firstName" , user.getFirstName());
             userRepository.put( "lastName" , user.getLastName());
             userRepository.put( "fullName" , user.getFullName());
             userRepository.put( "phone" , user.getPhone());
             userRepository.put( "email" , user.getEmail());
+            userRepository.put( "uuid" , user.getUuid());
             userRepository.put( "salt" , user.getSalt());
-            userRepository.put( "passwordHash" , user.getPasswordHash());
-
+    
             String body = gson.toJson(userRepository);
-            this.userData = userRepository;
+    
+            Connect connect = new Connect();
+            connect.insert(body);
+    
+            return true;
 
+            // this.userData = userRepository;
 
-            Map<String, String> result = new HashMap<String, String>();
-            result.put("status", "201");
-            return result;
+            // Map<String, String> result = new HashMap<String, String>();
+            // result.put("status", "201");
+            // return result;
             
         } catch (Exception e) {
-            this.LOGGER.error("erro ao salvar usuario", e);
-            return ResponseWith.map("500", "ONU018", "Serviço indisponível no momento, tente mais tarde!");
+            LOGGER.error("erro ao salvar usuario", e);
+            return false;
+            // return ResponseWith.map("500", "ONU018", "Serviço indisponível no momento, tente mais tarde!");
         }
 
 

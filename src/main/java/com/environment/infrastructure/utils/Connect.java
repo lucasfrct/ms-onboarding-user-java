@@ -1,10 +1,12 @@
 package com.environment.infrastructure.utils;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.util.JSON;
 
 import org.aspectj.weaver.ast.Or;
 import org.bson.Document;
@@ -147,22 +149,19 @@ public class Connect {
 
     }
 
-    public void insert(Map<String, String> documentMap) {
+    public void insert(String user) {
         try {
+
+            Document dbObject = Document.parse(user);
+            this.mongoCollection.insertOne(new Document(dbObject));
+            // this.mongoCollection.insert(new BasicDBObject(documentMap));
+
             // this.collection.insertOne(new Document("name", "marcus FEIO!!!!"));
-            // this.collection.insertOne(new BasicDBObject(documentMap));
-    
-            // try {
-            //         this.collection.insertOne(new Document()
-            //         .append("_id", new ObjectId())
-            //         .append("title", "Ski Bloopers")
-            //         .append("genres", Arrays.asList("Documentary", "Comedy")));
-            //     } catch (MongoException me) {
-            //         System.err.println("Unable to insert due to an error: " + me);
-            // }
-            
+            // this.collection.insertOne(new BasicDBObject(documentMap));           
+                
         } catch (Exception e) {
             LOGGER.error("exception: ", e);
+            System.err.println("Unable to insert due to an error: " + e);
         }
     }
  
