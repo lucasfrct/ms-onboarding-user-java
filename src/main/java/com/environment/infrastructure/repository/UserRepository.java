@@ -12,7 +12,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.FieldNamingPolicy;
 
 import com.environment.domain.User;
-import com.environment.infrastructure.utils.ResponseWith;
 import com.environment.infrastructure.utils.Connect;
 
 @Repository
@@ -47,23 +46,15 @@ public class UserRepository {
             String body = gson.toJson(userRepository);
     
             Connect connect = new Connect();
+            connect.database("");
+            connect.collection("");
             connect.insert(body);
     
-            return true;
-
-            // this.userData = userRepository;
-
-            // Map<String, String> result = new HashMap<String, String>();
-            // result.put("status", "201");
-            // return result;
+            return true;            
             
         } catch (Exception e) {
             LOGGER.error("erro ao salvar usuario", e);
             return false;
-            // return ResponseWith.map("500", "ONU018", "Serviço indisponível no momento, tente mais tarde!");
         }
-
-
-    };
-  
+    };  
 }

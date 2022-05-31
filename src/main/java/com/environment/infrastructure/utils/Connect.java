@@ -1,49 +1,30 @@
 package com.environment.infrastructure.utils;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.util.JSON;
 
-import org.aspectj.weaver.ast.Or;
-import org.bson.Document;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.lang.Error;
 import java.lang.String;
+import java.text.SimpleDateFormat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mongodb.MongoException;
-import org.bson.types.ObjectId;
+import org.bson.Document;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
-// import com.mongodb.client.result.InsertOneResult;
 
 
 
 public class Connect {
 
     String user = "development";
-    String password = "Alterar23";
+    String password = "Alterar123";
     String host = "127.0.0.1";
     String port = "27017";
 
-    String databaseName = "onboarding_user";
-    String collectionName = "onboarding_user";
+    public String databaseName = "onboarding_user";
+    public String collectionName = "onboarding_user";
 
     MongoClient mongoClient;
     MongoDatabase mongoDatabase;
@@ -65,7 +46,7 @@ public class Connect {
         }
 
         if(this.password.isEmpty()) {
-            this.error(400, "ONU021", "ccredencial password vazia");
+            this.error(400, "ONU021", "credencial password vazia");
         };
 
         if(this.host.isEmpty()) {
@@ -146,26 +127,16 @@ public class Connect {
             LOGGER.error("Banco de dados indisponível, não possível obter um client: ", e);
             return e.getMessage();
         }
-
     }
 
     public void insert(String user) {
         try {
-
             Document dbObject = Document.parse(user);
-            this.mongoCollection.insertOne(new Document(dbObject));
-            // this.mongoCollection.insert(new BasicDBObject(documentMap));
-
-            // this.collection.insertOne(new Document("name", "marcus FEIO!!!!"));
-            // this.collection.insertOne(new BasicDBObject(documentMap));           
+            this.mongoCollection.insertOne(dbObject);
                 
         } catch (Exception e) {
             LOGGER.error("exception: ", e);
             System.err.println("Unable to insert due to an error: " + e);
         }
-    }
- 
+    } 
 }
-
-// conn = new Connect();
-// db = conn.mongo();

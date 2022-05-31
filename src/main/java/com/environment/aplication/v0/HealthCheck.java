@@ -34,7 +34,7 @@ public class HealthCheck {
             return ResponseWith.json(response);
             
         } catch (Exception e) {
-            this.LOGGER.error("erro ao processar criacao do usuario", e);
+            LOGGER.error("erro ao processar criacao do usuario", e);
 
             Map<String, String> response = ResponseWith.map(
                 "500", 
