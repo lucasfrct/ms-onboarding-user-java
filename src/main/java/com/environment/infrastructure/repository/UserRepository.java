@@ -3,6 +3,12 @@ package com.environment.infrastructure.repository;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+
+import static com.mongodb.client.model.Filters.eq;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -13,6 +19,7 @@ import com.google.gson.FieldNamingPolicy;
 
 import com.environment.domain.User;
 import com.environment.infrastructure.utils.Connect;
+import com.environment.infrastructure.utils.ResponseWith;
 
 @Repository
 public class UserRepository {
@@ -56,5 +63,24 @@ public class UserRepository {
             LOGGER.error("erro ao salvar usuario", e);
             return false;
         }
-    };  
+    };
+
+    public Map<String, String> delete(User user) {
+        try {
+
+            Connect connect = new Connect();
+            connect.database("");
+            connect.collection("");
+            
+            if (!connect.delete(new Document("uuid", user.getUuid()))) {
+                return ResponseWith.map("404", "ONUXXX", "Não foi possível encontrar usuário.");
+            }
+            
+            return ResponseWith.result("204", "");
+            
+        } catch (Exception e) {
+            LOGGER.error("erro ao excluir usuario", e);
+            return ResponseWith.error("ONUXXX");
+        }
+    }
 }

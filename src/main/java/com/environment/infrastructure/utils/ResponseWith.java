@@ -129,7 +129,7 @@ public class ResponseWith {
             return ResponseEntity.status(responseWith.handleStatus(responseWith.statusNum)).body(body);
 
         } catch (Exception e) {
-            responseWith.LOGGER.error("erro ao converter para json", e);
+            LOGGER.error("erro ao converter para json", e);
 
             responseWith.statusNum = 500;
             responseWith.response = ResponseWith.map("500", "ONU016", "Serviço indisponível no momento, tente mais tarde!");

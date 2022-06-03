@@ -1,5 +1,7 @@
 package com.environment.infrastructure.utils;
 
+import static com.mongodb.client.model.Filters.eq;
+
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
@@ -11,10 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.MongoCollection;
-
-
+import com.google.gson.FieldNamingPolicy;
 
 public class Connect {
 
@@ -28,7 +31,7 @@ public class Connect {
 
     MongoClient mongoClient;
     MongoDatabase mongoDatabase;
-    MongoCollection<Document> mongoCollection;
+    public MongoCollection<Document> mongoCollection;
     String connectstring = "";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Connect.class);
@@ -138,5 +141,21 @@ public class Connect {
             LOGGER.error("exception: ", e);
             System.err.println("Unable to insert due to an error: " + e);
         }
-    } 
+    }
+
+    public Boolean delete(Document query) {
+        try {
+            
+            DeleteResult deleteResult = this.mongoCollection.deleteOne(query);
+            if (deleteResult.getDeletedCount() != 1) {
+                return false;
+            }
+
+            return true;
+            
+        } catch (Exception e) {
+            LOGGER.error("erro ao excluir usuario", e);
+            return false;
+        }
+    }
 }

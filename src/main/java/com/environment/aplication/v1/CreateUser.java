@@ -46,10 +46,7 @@ public class CreateUser {
             Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
             
             // preenche a classe do usuario
-            User user = gson.fromJson(body, User.class);
-            
-            // Gera um UUID aleatório
-            user.setUuid(UUID.randomUUID().toString());
+            User user = gson.fromJson(body, User.class);            
             
             // recebe e trata as violacoes
             Set<ConstraintViolation<User>> violations = validator.validate(user);
@@ -57,6 +54,9 @@ public class CreateUser {
                 Type errorType = new TypeToken<Map<String, String>>() {}.getType();
                 return ResponseWith.json(gson.fromJson(violation.getMessage(), errorType));
             }
+
+            // Gera um UUID aleatório
+            user.setUuid(UUID.randomUUID().toString());
 
             // valida o usuario
             Map<String, String> valid = user.validate();

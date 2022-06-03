@@ -57,7 +57,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
-        this.salt = salt;        
+        this.salt = salt;
     }
     
     public void setUuid(String uuid) {
@@ -194,7 +194,6 @@ public class User {
         if (!check) {
             LOGGER.error("servico indisponivel. tente novamente em instantes.", check);
             return ResponseWith.map("400", "ONU007", "Serviço indisponível. Tente novamente em instantes.");
-
         }
         
         valid.put("status", "200");
