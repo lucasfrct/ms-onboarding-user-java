@@ -18,8 +18,6 @@ import java.lang.reflect.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.ValidatorFactory;
 import javax.validation.Validation;
@@ -39,7 +37,7 @@ public class CreateUser {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateUser.class);
 
     @PostMapping("/api/v1/user")
-    public ResponseEntity<String> index(@Valid @RequestBody String body, HttpServletRequest servletRequest) {
+    public ResponseEntity<String> index(@Valid @RequestBody String body) {
         try {                       
             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
             Validator validator = factory.getValidator();            
@@ -72,13 +70,10 @@ public class CreateUser {
             
             // salvando no banco de dados
             UserRepository userRepository = new UserRepository();
-            if (!userRepository.save(user)) {
-                LOGGER.error("erro ao salvar usuario");
-                return ResponseWith.json(ResponseWith.map("500", "ONU018", "Não foi possível salvar usuário na base de dados!"));
-            }
+            Map<String, String> result = userRepository.save(user);            
             
             // resposta de sucesso quando o usuario e criado
-            return ResponseWith.json(ResponseWith.result("201", ""));
+            return ResponseWith.json(result);
 
         } catch (Exception e) {
             LOGGER.error("erro ao processar criacao do usuario", e);

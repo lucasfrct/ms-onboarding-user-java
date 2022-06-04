@@ -106,16 +106,13 @@ public class User {
 
     public Map<String, String> validateFirstName() {
 
-        Map<String, String> valid = new HashMap<String, String>();
-
         Boolean check = this.firstName.matches(".*[0-9].*");
         if (check) {
             LOGGER.error("first name contem caracteres invalidos!", check);
             return ResponseWith.map("400", "ONU001", "First Name contém caracteres inválidos!");
         }
 
-        valid.put("status", "200");
-        return valid;
+        return ResponseWith.result("200", "");
     }
 
     public Map<String, String> validateLastName() {
@@ -126,18 +123,14 @@ public class User {
             return ResponseWith.map("400", "ONU002", "Last Name contém caracteres inválidos!");
             
         }
-
-        Map<String, String> valid = new HashMap<String, String>();
-        valid.put("status", "200");
-        return valid;
+        
+        return ResponseWith.result("200", "");
     }
 
     /**
      * verifica se o telefone tem algum caractere invalido ou se e diferente do tamanho 11.
      */
     public Map<String, String> validatePhone() {
-
-        Map<String, String> valid = new HashMap<String, String>();
 
         // verifica se o telefone tem algum caractere invalido
         Boolean check = this.phone.matches(".*[a-zA-Z].*");
@@ -156,8 +149,8 @@ public class User {
 
         }
 
-        valid.put("status", "200");
-        return valid;
+        return ResponseWith.result("200", "");
+
     }
 
     public Map<String, String> validatePassword() {

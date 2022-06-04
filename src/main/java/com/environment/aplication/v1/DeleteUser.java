@@ -23,7 +23,7 @@ import com.google.gson.FieldNamingPolicy;
 @RestController
 public class DeleteUser {
     
-    @DeleteMapping("/api/v1/userr/{uuid}")
+    @DeleteMapping("/api/v1/user/{uuid}")
     public ResponseEntity<String> index( @PathVariable String uuid ) {
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
@@ -40,5 +40,3 @@ public class DeleteUser {
         return ResponseWith.json(response);
     }
 }
-
-// /api/v1/user/629813e4d03bd967541b8a0d

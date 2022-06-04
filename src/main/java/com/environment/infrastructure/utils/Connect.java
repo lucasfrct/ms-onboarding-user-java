@@ -2,6 +2,7 @@ package com.environment.infrastructure.utils;
 
 import static com.mongodb.client.model.Filters.eq;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
@@ -14,8 +15,12 @@ import org.slf4j.LoggerFactory;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
+
 import com.mongodb.client.MongoCollection;
 import com.google.gson.FieldNamingPolicy;
 
@@ -132,14 +137,21 @@ public class Connect {
         }
     }
 
-    public void insert(String user) {
+    public Boolean insert(Document user) {
         try {
-            Document dbObject = Document.parse(user);
-            this.mongoCollection.insertOne(dbObject);
+            this.mongoCollection.insertOne(user);
+            
+            ObjectId id = (ObjectId)user.get( "_id" );
+            if (id.toString().isEmpty()) {
+                return false;
+            }
+            
+            return true;
                 
         } catch (Exception e) {
             LOGGER.error("exception: ", e);
             System.err.println("Unable to insert due to an error: " + e);
+            return false;
         }
     }
 
@@ -155,6 +167,20 @@ public class Connect {
             
         } catch (Exception e) {
             LOGGER.error("erro ao excluir usuario", e);
+            return false;
+        }
+    }
+
+    public Boolean update(BasicDBObject query, BasicDBObject fields) {
+        try {
+
+            UpdateResult updateResult = this.mongoCollection.updateMany(query, fields);
+            if (updateResult.getModifiedCount() != 1) {
+                return false;
+            }
+            
+            return true;
+        } catch (Exception e) {
             return false;
         }
     }
