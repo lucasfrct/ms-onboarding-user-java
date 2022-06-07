@@ -1,7 +1,5 @@
 package com.environment.infrastructure.utils;
 
-import static com.mongodb.client.model.Filters.eq;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -14,15 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.bson.conversions.Bson;
 
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
+import static com.mongodb.client.model.Projections.fields;
+import static com.mongodb.client.model.Projections.excludeId;
+
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-
-import com.mongodb.client.MongoCollection;
-import com.google.gson.FieldNamingPolicy;
 
 public class Connect {
 
@@ -182,6 +181,16 @@ public class Connect {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public String readOne(Document query, Bson includes) {
+        try {
+            Document data = this.mongoCollection.find(query).projection(fields(excludeId(), includes)).first();
+            return data.toJson();
+        } catch (Exception e) {
+            System.err.println("Error: "+ e);
+            return new Document().toJson();
         }
     }
 }

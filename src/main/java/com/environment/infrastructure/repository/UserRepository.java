@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.bson.Document;
-
+import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +18,7 @@ import com.google.gson.FieldNamingPolicy;
 import java.text.SimpleDateFormat;
 
 import com.mongodb.BasicDBObject;
+import static com.mongodb.client.model.Projections.include;
 
 import com.environment.domain.User;
 import com.environment.infrastructure.utils.Connect;
@@ -90,7 +91,7 @@ public class UserRepository {
             LOGGER.error("erro ao excluir usuario", e);
             return ResponseWith.error("ONUXXX");
         }
-    }
+    };
 
     public Boolean update(User user) {        
         try {            
@@ -124,6 +125,26 @@ public class UserRepository {
         } catch (Exception e) {
             LOGGER.error("erro ao salvar usuario", e);
             return false;
+        }
+    };
+
+    public Map<String, String> readByUuid(User user) {
+        try {
+            Connect connect = new Connect();
+            connect.database("");
+            connect.collection("");
+
+            Document query = new Document("uuid", user.getUuid());
+
+            Bson includes = include("firstName", "lastName", "fullName", "phone", "email");
+
+            String result = connect.readOne(query, includes);
+            
+            return ResponseWith.result("200", result);
+            
+        } catch (Exception e) {
+            LOGGER.error("erro ao excluir usuario", e);
+            return ResponseWith.error("ONUXXX");
         }
     };
 }

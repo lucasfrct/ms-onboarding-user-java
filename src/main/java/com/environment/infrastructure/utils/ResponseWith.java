@@ -2,9 +2,14 @@ package com.environment.infrastructure.utils;
 
 import java.util.Map;
 import java.util.HashMap;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.FieldNamingPolicy;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -125,7 +130,16 @@ public class ResponseWith {
 
         try {
 
-            String body = responseWith.gson.toJson(responseWith.handleMessage(responseWith.response));
+            // String body = 
+            // responseWith.gson.toJson(responseWith.handleMessage(responseWith.response));
+            // return ResponseEntity.status(responseWith.handleStatus(responseWith.statusNum)).body(body);
+
+            String body = responseWith.handleMessage(responseWith.response).toString();
+
+            if (!responseWith.isJson(body)) {
+                // responseWith.gson.toJson(message);
+                body = responseWith.gson.toJson(responseWith.handleMessage(responseWith.response));
+            }
             return ResponseEntity.status(responseWith.handleStatus(responseWith.statusNum)).body(body);
 
         } catch (Exception e) {
@@ -169,5 +183,18 @@ public class ResponseWith {
         }
 
         return newMap;
+    }
+
+    public boolean isJson(String Json) {
+        try {
+            this.gson.fromJson(Json, Object.class);
+            Object jsonObjType = this.gson.fromJson(Json, Object.class).getClass();
+            if(jsonObjType.equals(String.class)){
+                return false;
+            }
+            return true;
+        } catch (com.google.gson.JsonSyntaxException ex) {
+            return false;
+        }
     }
 }
