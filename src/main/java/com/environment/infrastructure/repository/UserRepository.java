@@ -147,4 +147,28 @@ public class UserRepository {
             return ResponseWith.error("ONUXXX");
         }
     };
+
+    public Map<String, String> readByEmail(User user) {
+        try {
+            Connect connect = new Connect();
+            connect.database("");
+            connect.collection("");
+
+            Document query = new Document("email", user.getEmail());
+
+            Bson includes = include("firstName", "lastName", "fullName", "phone", "email");
+
+            String result = connect.readOne(query, includes);
+
+            if (result.equals("{ }")) {
+                return ResponseWith.map("404", "ONUXXX", "email não encontrado");                
+            }
+            
+            return ResponseWith.result("200", result);
+            
+        } catch (Exception e) {
+            LOGGER.error("erro encontrar usuario", e);
+            return ResponseWith.error("ONUXXX");
+        }
+    };
 }

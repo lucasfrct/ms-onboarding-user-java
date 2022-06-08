@@ -126,28 +126,22 @@ public class ResponseWith {
     }
 
     public static ResponseEntity<String> json(Map<String, String> response) {
-        ResponseWith responseWith = new ResponseWith(response);
-
+        
         try {
-
-            // String body = 
-            // responseWith.gson.toJson(responseWith.handleMessage(responseWith.response));
-            // return ResponseEntity.status(responseWith.handleStatus(responseWith.statusNum)).body(body);
-
+            ResponseWith responseWith = new ResponseWith(response);
+            
             String body = responseWith.handleMessage(responseWith.response).toString();
-
+            
             if (!responseWith.isJson(body)) {
-                // responseWith.gson.toJson(message);
                 body = responseWith.gson.toJson(responseWith.handleMessage(responseWith.response));
-            }
+            }                
+
             return ResponseEntity.status(responseWith.handleStatus(responseWith.statusNum)).body(body);
 
-        } catch (Exception e) {
+        } catch (Exception e) {            
             LOGGER.error("erro ao converter para json", e);
-
-            responseWith.statusNum = 500;
-            responseWith.response = ResponseWith.map("500", "ONU016", "Serviço indisponível no momento, tente mais tarde!");
-
+            
+            ResponseWith responseWith = new ResponseWith(ResponseWith.error("ONU016"));
             String body = responseWith.gson.toJson(responseWith.handleMessage(responseWith.response));        
             return ResponseEntity.status(responseWith.handleStatus(responseWith.statusNum)).body(body);
         }

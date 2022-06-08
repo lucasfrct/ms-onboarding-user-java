@@ -84,6 +84,10 @@ public class User {
         return phone;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -193,6 +197,16 @@ public class User {
         return valid;
     }
 
+    public Map<String, String> validateEmail() {
+
+        Boolean check = this.email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
+        if (!check) {
+            LOGGER.error("email contem caracteres invalidos!", check);
+            return ResponseWith.map("400", "ONUXXX", "Email contém caracteres inválidos!");
+        }
+
+        return ResponseWith.result("200", "");
+    }
 
     public Map<String, String> validate() {
 
@@ -219,6 +233,11 @@ public class User {
         Map<String, String> uuidValid = this.validateUuid();
         if (Integer.parseInt(uuidValid.get("status")) >= 400) {
             return uuidValid;
+        }
+
+        Map<String, String> emailValid = this.validateEmail();
+        if (Integer.parseInt(emailValid.get("status")) >= 400) {
+            return emailValid;
         }
         
         Map<String, String> result = new HashMap<String, String>();
