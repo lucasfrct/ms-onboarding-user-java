@@ -1,11 +1,13 @@
 package com.environment.infrastructure.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
 
 import java.lang.String;
+import java.util.Map;
 import java.text.SimpleDateFormat;
 
 import org.slf4j.Logger;
@@ -15,8 +17,16 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.bson.conversions.Bson;
 
+import com.mongodb.client.FindIterable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+
 import static com.mongodb.client.model.Projections.fields;
 import static com.mongodb.client.model.Projections.excludeId;
 
@@ -188,6 +198,26 @@ public class Connect {
         try {
             Document data = this.mongoCollection.find(query).projection(fields(excludeId(), includes)).first();
             return data.toJson();
+        } catch (Exception e) {
+            System.err.println("Error: "+ e);
+            return new Document().toJson();
+        }
+    }
+
+    public String readAll(Document query, Bson includes, int start, int limit) {
+        try {
+            ArrayList<String> response = new ArrayList<>();
+            int i = 1;            
+
+            FindIterable<Document> iterDoc = this.mongoCollection.find(query).projection(fields(excludeId(), includes));
+            MongoCursor<Document> cursor = iterDoc.iterator();
+            while (cursor.hasNext() && i < (start + limit) ) {
+                if (i >= start) { response.add(cursor.next().toJson()); }
+                if (i >= (start + limit)) { break; }
+                i++;
+            }
+            
+            return response.toString();
         } catch (Exception e) {
             System.err.println("Error: "+ e);
             return new Document().toJson();

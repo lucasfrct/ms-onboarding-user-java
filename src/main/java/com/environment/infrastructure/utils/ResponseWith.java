@@ -130,11 +130,11 @@ public class ResponseWith {
         try {
             ResponseWith responseWith = new ResponseWith(response);
             
-            String body = responseWith.handleMessage(responseWith.response).toString();
+            String body = responseWith.handleMessage(responseWith.response).toString();            
             
-            if (!responseWith.isJson(body)) {
+            if (!body.isEmpty() && !responseWith.isJson(body)) {            
                 body = responseWith.gson.toJson(responseWith.handleMessage(responseWith.response));
-            }                
+            }
 
             return ResponseEntity.status(responseWith.handleStatus(responseWith.statusNum)).body(body);
 
