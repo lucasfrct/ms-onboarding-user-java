@@ -78,7 +78,7 @@ public  class UpdateUser {
             UserRepository userRepository = new UserRepository();
             if (!userRepository.update(user)) {
                 LOGGER.error("erro ao atualizar usuario");
-                return ResponseWith.json(ResponseWith.map("500", "ONUXXX", "Não foi possível atualizar o usuário na base de dados!"));
+                return ResponseWith.json(ResponseWith.map("500", "ONU042", "Não foi possível atualizar o usuário na base de dados!"));
             }
             
             // resposta de sucesso quando o usuario e criado
@@ -86,7 +86,7 @@ public  class UpdateUser {
 
         } catch (Exception e) {
             LOGGER.error("erro ao processar criacao do usuario", e);
-            return ResponseWith.json(ResponseWith.error("ONUXXX"));
+            return ResponseWith.json(ResponseWith.error("ONU028"));
         }
     }
 }

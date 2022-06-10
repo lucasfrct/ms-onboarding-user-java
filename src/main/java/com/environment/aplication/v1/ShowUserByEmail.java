@@ -51,7 +51,7 @@ public class ShowUserByEmail {
             
             return ResponseWith.json(result);
         } catch (Exception e) {
-            return ResponseWith.json(ResponseWith.error("ONUXXX"));
+            return ResponseWith.json(ResponseWith.error("ONU026"));
         }
     }
 }

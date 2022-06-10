@@ -68,6 +68,10 @@ public class User {
         return uuid;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -202,7 +206,7 @@ public class User {
         Boolean check = this.email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
         if (!check) {
             LOGGER.error("email contem caracteres invalidos!", check);
-            return ResponseWith.map("400", "ONUXXX", "Email contém caracteres inválidos!");
+            return ResponseWith.map("400", "ONU029", "Email contém caracteres inválidos!");
         }
 
         return ResponseWith.result("200", "");

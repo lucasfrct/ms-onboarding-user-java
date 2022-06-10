@@ -63,14 +63,14 @@ public class UserRepository {
             connect.collection("");
 
             if(!connect.insert(insertFields)) {
-                return ResponseWith.map("500", "ONUXXX", "Não foi possível inserir usuário.");
+                return ResponseWith.map("500", "ONU033", "Não foi possível inserir usuário.");
             }
     
             return ResponseWith.result("201", "");            
             
         } catch (Exception e) {
             LOGGER.error("erro ao salvar usuario", e);
-            return ResponseWith.error("ONUXXX");
+            return ResponseWith.error("ONU036");
         }
     };
 
@@ -82,14 +82,14 @@ public class UserRepository {
             connect.collection("");
             
             if (!connect.delete(new Document("uuid", user.getUuid()))) {
-                return ResponseWith.map("404", "ONUXXX", "Não foi possível encontrar usuário.");
+                return ResponseWith.map("404", "ONU031", "Não foi possível encontrar usuário.");
             }
             
             return ResponseWith.result("204", "");
             
         } catch (Exception e) {
             LOGGER.error("erro ao excluir usuario", e);
-            return ResponseWith.error("ONUXXX");
+            return ResponseWith.error("ONU032");
         }
     };
 
@@ -144,7 +144,7 @@ public class UserRepository {
             
         } catch (Exception e) {
             LOGGER.error("erro ao excluir usuario", e);
-            return ResponseWith.error("ONUXXX");
+            return ResponseWith.error("ONU034");
         }
     };
 
@@ -161,14 +161,38 @@ public class UserRepository {
             String result = connect.readOne(query, includes);
 
             if (result.equals("{ }")) {
-                return ResponseWith.map("404", "ONUXXX", "email não encontrado");                
+                return ResponseWith.map("404", "ONU035", "email não encontrado");                
             }
             
             return ResponseWith.result("200", result);
             
         } catch (Exception e) {
             LOGGER.error("erro encontrar usuario", e);
-            return ResponseWith.error("ONUXXX");
+            return ResponseWith.error("ONU038");
+        }
+    };
+
+    public Map<String, String> readByName(User user) {
+        try {
+            Connect connect = new Connect();
+            connect.database("");
+            connect.collection("");
+
+            Document query = new Document("firstName", user.getFirstName());
+
+            Bson includes = include("firstName", "lastName", "fullName", "phone", "email");
+
+            String result = connect.readAll(query, includes, 0, 5);
+
+            if (result.equals("{ }")) {
+                return ResponseWith.map("404", "ONU039", "email não encontrado");                
+            }
+            
+            return ResponseWith.result("200", result);
+            
+        } catch (Exception e) {
+            LOGGER.error("erro encontrar usuario", e);
+            return ResponseWith.error("ONU037");
         }
     };
 
@@ -185,14 +209,14 @@ public class UserRepository {
             String result =  connect.readAll(query, includes, 0, 5);
 
             if (result.equals("{ }")) {
-                return ResponseWith.map("404", "ONUXXX", "email não encontrado");                
+                return ResponseWith.map("404", "ONU040", "email não encontrado");                
             }
             
             return ResponseWith.result("200", result);
             
         } catch (Exception e) {
             LOGGER.error("erro encontrar usuario", e);
-            return ResponseWith.error("ONUXXX");
+            return ResponseWith.error("ONU041");
         }
     };
 }
