@@ -31,16 +31,14 @@ public class UserRepository {
 
     Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
-    public User user;
-    public Map<String, String> userData = new HashMap<String, String>();
-
     public UserRepository() {
     };
 
+    /**
+    * Salva um novo usuario ao db
+    */
     public Map<String, String> save(User user) {        
         try {
-            this.user = user;
-
             Date date = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String currentdate = formatter.format(date);
@@ -59,6 +57,11 @@ public class UserRepository {
             insertFields.append( "updateAt" , currentdate);
         
             Connect connect = new Connect();
+
+            if (!connect.health().contains("UP")) {
+                return ResponseWith.map("500", "ONU043", "Não foi possível conectar-se ao bancos de dados.");
+            } 
+
             connect.database("");
             connect.collection("");
 
@@ -66,7 +69,7 @@ public class UserRepository {
                 return ResponseWith.map("500", "ONU033", "Não foi possível inserir usuário.");
             }
     
-            return ResponseWith.result("201", "");            
+            return ResponseWith.result("201", "");
             
         } catch (Exception e) {
             LOGGER.error("erro ao salvar usuario", e);
@@ -74,6 +77,9 @@ public class UserRepository {
         }
     };
 
+    /**
+    * deleta um usuario no db
+    */
     public Map<String, String> delete(User user) {
         try {
 
@@ -93,9 +99,11 @@ public class UserRepository {
         }
     };
 
+    /**
+    * Atualiza um usuário no db
+    */
     public Boolean update(User user) {        
         try {            
-            this.user = user;
 
             Date date = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -128,6 +136,9 @@ public class UserRepository {
         }
     };
 
+    /**
+    * le um usuario pelo uuid no db
+    */
     public Map<String, String> readByUuid(User user) {
         try {
             Connect connect = new Connect();
@@ -148,6 +159,9 @@ public class UserRepository {
         }
     };
 
+    /**
+    * le um usuario por email no db
+    */
     public Map<String, String> readByEmail(User user) {
         try {
             Connect connect = new Connect();
@@ -172,6 +186,9 @@ public class UserRepository {
         }
     };
 
+    /**
+    * le um usuario pelo nome no db
+    */
     public Map<String, String> readByName(User user) {
         try {
             Connect connect = new Connect();
@@ -196,6 +213,9 @@ public class UserRepository {
         }
     };
 
+    /**
+    * le usuarios no db
+    */
     public Map<String, String> readUsers() {
         try {
             Connect connect = new Connect();

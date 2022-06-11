@@ -70,15 +70,11 @@ public class CreateUser {
             
             // salvando no banco de dados
             UserRepository userRepository = new UserRepository();
-            Map<String, String> result = userRepository.save(user);            
+            return ResponseWith.json(userRepository.save(user));
             
-            // resposta de sucesso quando o usuario e criado
-            return ResponseWith.json(result);
-
         } catch (Exception e) {
             LOGGER.error("erro ao processar criacao do usuario", e);
             return ResponseWith.json(ResponseWith.error("ONU017"));
         }
-    }
-    
+    }    
 }

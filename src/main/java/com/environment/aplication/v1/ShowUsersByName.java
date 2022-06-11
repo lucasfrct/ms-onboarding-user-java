@@ -16,7 +16,7 @@ import com.environment.infrastructure.utils.ResponseWith;
 import com.environment.domain.User;
 
 /**
- * Lista  usuários pro nome
+ * Lista usuários por nome
  */
 @RestController
 public class ShowUsersByName {

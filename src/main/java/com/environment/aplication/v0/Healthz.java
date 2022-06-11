@@ -8,9 +8,7 @@ import com.environment.infrastructure.utils.ResponseWith;
 
 import java.text.SimpleDateFormat;
 
-import java.util.Map;
 import java.util.Date;
-import java.util.HashMap;
 
 @RestController
 public class Healthz {
@@ -21,11 +19,7 @@ public class Healthz {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String currentdate = formatter.format(date);
 
-        Map<String, String> response = new HashMap<String, String>();
-        response.put("status", "200");
-        response.put("data", "UP: "+currentdate);
-
-        return ResponseWith.json(response);
+        return ResponseWith.json(ResponseWith.result("200", "UP: "+currentdate));
     }
     
 }
