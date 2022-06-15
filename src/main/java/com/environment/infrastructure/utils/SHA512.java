@@ -5,10 +5,7 @@ import java.util.Random;
 
 public class SHA512 
 {
-    public static void main(String[] args) throws NoSuchAlgorithmException 
-    {
-
-    }
+    public static void main(String[] args) throws NoSuchAlgorithmException {}
 
     public static String cipher(String str, String salt)
     {

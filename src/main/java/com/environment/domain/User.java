@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.Size;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -194,7 +194,7 @@ public class User {
         Boolean check = this.uuid.length() == 36;
         if (!check) {
             LOGGER.error("servico indisponivel. tente novamente em instantes.", check);
-            return ResponseWith.map("400", "ONU007", "Serviço indisponível. Tente novamente em instantes.");
+            return ResponseWith.map("400", "ONU007", "UUID inválida.");
         }
         
         valid.put("status", "200");
@@ -206,7 +206,7 @@ public class User {
         Boolean check = this.email.matches("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
         if (!check) {
             LOGGER.error("email contem caracteres invalidos!", check);
-            return ResponseWith.map("400", "ONU029", "Email contém caracteres inválidos!");
+            return ResponseWith.map("400", "ONU029", "Email inválido!");
         }
 
         return ResponseWith.result("200", "");

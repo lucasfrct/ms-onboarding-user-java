@@ -16,10 +16,9 @@ public class Healthz {
     @RequestMapping("/healthz")
     public ResponseEntity<String> index() {
         Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentdate = formatter.format(date);
 
         return ResponseWith.json(ResponseWith.result("200", "UP: "+currentdate));
-    }
-    
+    }    
 }

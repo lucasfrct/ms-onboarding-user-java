@@ -1,13 +1,10 @@
 package com.environment.infrastructure.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
-
 import java.lang.String;
-import java.util.Map;
 import java.text.SimpleDateFormat;
 
 import org.slf4j.Logger;
@@ -17,21 +14,18 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.bson.conversions.Bson;
 
-import com.mongodb.client.FindIterable;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Date;
 
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
+import com.mongodb.client.result.UpdateResult;
+import com.mongodb.client.result.DeleteResult;
 
 import static com.mongodb.client.model.Projections.fields;
 import static com.mongodb.client.model.Projections.excludeId;
-
-import com.mongodb.client.result.DeleteResult;
-import com.mongodb.client.result.UpdateResult;
 
 public class Connect {
 
@@ -129,20 +123,20 @@ public class Connect {
         try {
         
             this.client();
-            this.database(this.databaseName);
-            this.collection(this.collectionName);
-
-            Document statusDB = new Document().append("serverStatus", 1);    
-            Document result = this.mongoDatabase.runCommand(statusDB);
-    
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
-            String dateTime = formatter.format(result.get("localTime"));
+            Object result = this.database(this.databaseName).runCommand(new Document().append("serverStatus", 1)).get("localTime");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dateTime = formatter.format(result);
         
-            return "UP "+dateTime;
+            return String.format("UP %s", dateTime);
             
         } catch (Exception e) {
-            LOGGER.error("Banco de dados indisponível, não possível obter um client: ", e);
-            return e.getMessage();
+            LOGGER.error("Banco de dados indisponível, não é possível obter um client: ", e);
+
+            Date date = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentdate = formatter.format(date);
+
+            return String.format("DOWN %s", currentdate);
         }
     }
 
@@ -165,8 +159,7 @@ public class Connect {
     }
 
     public Boolean delete(Document query) {
-        try {
-            
+        try {            
             DeleteResult deleteResult = this.mongoCollection.deleteOne(query);
             if (deleteResult.getDeletedCount() != 1) {
                 return false;
@@ -182,7 +175,6 @@ public class Connect {
 
     public Boolean update(BasicDBObject query, BasicDBObject fields) {
         try {
-
             UpdateResult updateResult = this.mongoCollection.updateMany(query, fields);
             if (updateResult.getModifiedCount() != 1) {
                 return false;

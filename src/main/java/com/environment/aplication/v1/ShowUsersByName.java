@@ -7,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.FieldNamingPolicy;
@@ -20,6 +23,8 @@ import com.environment.domain.User;
  */
 @RestController
 public class ShowUsersByName {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateUser.class);
     
     @GetMapping("/api/v1/users/{name}")
     public ResponseEntity<String> index(@PathVariable String name) {
@@ -39,6 +44,7 @@ public class ShowUsersByName {
             
             return ResponseWith.json(result);
         } catch (Exception e) {
+            LOGGER.error("erro ao buscar usuarios", e);
             return ResponseWith.json(ResponseWith.error("ONU025"));
         }
     }

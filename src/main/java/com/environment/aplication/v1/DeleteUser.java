@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,21 +24,29 @@ import com.google.gson.FieldNamingPolicy;
  */
 @RestController
 public class DeleteUser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateUser.class);
     
     @DeleteMapping("/api/v1/user/{uuid}")
     public ResponseEntity<String> index( @PathVariable String uuid ) {
-        Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-
-        User user = gson.fromJson("{}", User.class);
-        user.setUuid( uuid );
-        Map<String, String> valid = user.validateUuid();
-        if (valid.get("status") != "200") {
-            return ResponseWith.json(valid);
+        try {
+            Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+    
+            User user = gson.fromJson("{}", User.class);
+            user.setUuid( uuid );
+            Map<String, String> valid = user.validateUuid();
+            if (valid.get("status") != "200") {
+                return ResponseWith.json(valid);
+            }
+            
+            UserRepository userRepository = new UserRepository();
+            Map<String, String> response = userRepository.delete( user );
+    
+            return ResponseWith.json(response);
+            
+        } catch (Exception e) {
+            LOGGER.error("erro ao deletar usuario", e);
+            return ResponseWith.json(ResponseWith.error("ONU046"));
         }
-        
-        UserRepository userRepository = new UserRepository();
-        Map<String, String> response = userRepository.delete( user );
-
-        return ResponseWith.json(response);
     }
 }

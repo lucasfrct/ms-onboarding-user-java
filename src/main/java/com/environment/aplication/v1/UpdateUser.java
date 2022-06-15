@@ -9,10 +9,10 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.Valid;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.FieldNamingPolicy;
 
 import java.lang.reflect.Type;
 
@@ -55,6 +55,11 @@ public  class UpdateUser {
 
             user.setUuid( uuid );
 
+            Map<String, String> validateUuid = user.validateUuid();
+            if (validateUuid.get("status") != "200") {
+                return ResponseWith.json(validateUuid);
+            }
+
             // valida o usuario
             Map<String, String> validateFirstName = user.validateFirstName();
             if (validateFirstName.get("status") != "200") {
@@ -69,7 +74,12 @@ public  class UpdateUser {
             Map<String, String> validatePhone = user.validatePhone();
             if (validatePhone.get("status") != "200") {
                 return ResponseWith.json(validatePhone);
-            }            
+            }
+
+            Map<String, String> validateEmail = user.validateEmail();
+            if (validateEmail.get("status") != "200") {
+                return ResponseWith.json(validateEmail);
+            }
             
             // monta o fullName
             user.fullName = user.firstName+" "+user.lastName;
@@ -85,7 +95,7 @@ public  class UpdateUser {
             return ResponseWith.json(ResponseWith.result("204", ""));
 
         } catch (Exception e) {
-            LOGGER.error("erro ao processar criacao do usuario", e);
+            LOGGER.error("erro ao atualizar do usuario", e);
             return ResponseWith.json(ResponseWith.error("ONU028"));
         }
     }

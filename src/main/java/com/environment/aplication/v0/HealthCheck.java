@@ -15,11 +15,17 @@ public class HealthCheck {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HealthCheck.class);
     
-    @RequestMapping("/mongo/health")
+    @RequestMapping("/api/v0/mongo/health")
     public ResponseEntity<String> index() {
         try {            
             Connect connect = new Connect();
-            return ResponseWith.json(ResponseWith.result("200", connect.health()));
+            String result = connect.health();
+
+            if (result.contains("DOWN")) {
+                return ResponseWith.json(ResponseWith.map("500", "ONU044", result));
+            }
+
+            return ResponseWith.json(ResponseWith.result("200", result));
             
         } catch (Exception e) {
             LOGGER.error("banco de dados indisponivel.", e);            

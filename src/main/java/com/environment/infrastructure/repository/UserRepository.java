@@ -1,11 +1,11 @@
 package com.environment.infrastructure.repository;
 
-import java.util.HashMap;
 import java.util.Date;
 import java.util.Map;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +18,7 @@ import com.google.gson.FieldNamingPolicy;
 import java.text.SimpleDateFormat;
 
 import com.mongodb.BasicDBObject;
+
 import static com.mongodb.client.model.Projections.include;
 
 import com.environment.domain.User;
@@ -64,6 +65,14 @@ public class UserRepository {
 
             connect.database("");
             connect.collection("");
+
+            Document query = new Document("email", user.getEmail());
+
+            Bson includes = include("firstName");
+            
+            if(!connect.readOne(query, includes).contains("{ }")) {
+                return ResponseWith.map("404", "ONU045", "Email já cadastrado.");
+            }
 
             if(!connect.insert(insertFields)) {
                 return ResponseWith.map("500", "ONU033", "Não foi possível inserir usuário.");
@@ -124,11 +133,9 @@ public class UserRepository {
             connect.database("");
             connect.collection("");
 
-            BasicDBObject query = new BasicDBObject("uuid",  user.getUuid());
-
-            connect.update(query, fields);
+            BasicDBObject query = new BasicDBObject("uuid",  user.getUuid());            
     
-            return true;            
+            return connect.update(query, fields);            
             
         } catch (Exception e) {
             LOGGER.error("erro ao salvar usuario", e);
@@ -201,8 +208,8 @@ public class UserRepository {
 
             String result = connect.readAll(query, includes, 0, 5);
 
-            if (result.equals("{ }")) {
-                return ResponseWith.map("404", "ONU039", "email não encontrado");                
+            if (result.equals("[]")) {
+                return ResponseWith.map("404", "ONU039", "Usuário não encontrado!");                
             }
             
             return ResponseWith.result("200", result);

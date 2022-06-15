@@ -44,6 +44,7 @@ public class ShowUser {
             
             return ResponseWith.json(result);
         } catch (Exception e) {
+            LOGGER.error("erro ao buscar usuario", e);
             return ResponseWith.json(ResponseWith.error("ONU030"));
         }
     }
