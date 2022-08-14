@@ -1,0 +1,37 @@
+# ## Maven development container 
+# ## etapa de build do projeto
+FROM maven:3.6.3-openjdk-11 AS ms-onbloarding-user-java-build
+
+# ## configurando variáveis de Ambiente
+ENV APP_HOME=/tmp
+
+# ## diretorio de trabalho
+WORKDIR "$APP_HOME"
+
+# ## copia as dependencias
+COPY pom.xml ./
+
+# ## instala as dependencias
+RUN mvn clean install
+
+# ## Máquina de desenvolvimento
+FROM ms-onbloarding-user-java-build AS ms-onbloarding-user-java
+
+# ## configurando variáveis de Ambiente
+ENV APP_HOME=/tmp
+
+# ## diretorio de trabalho
+WORKDIR "$APP_HOME"
+
+# ## copia o projeto
+COPY ./ ./
+
+# ## cria volume para diretorio padrao
+VOLUME "$APP_HOME"
+
+## portas de acesso
+EXPOSE 8080
+
+# ## inicia o springboot
+CMD mvn spring-boot:run
+
