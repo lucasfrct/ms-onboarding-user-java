@@ -2,53 +2,228 @@
 	"info": {
 		"_postman_id": "c9ee5c45-def3-4c9c-9794-52c42e20f469",
 		"name": "MS::Onboarding::User::Java",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18571520"
 	},
 	"item": [
 		{
-			"name": "api/v1/user",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "\r\n{\r\n    \"first_name\": \"Feio\",\r\n    \"last_name\": \"Muito\",\r\n    \"phone\": \"(21) 34567-8910\",\r\n    \"email\": \"FeiioLucas@Ugly.com\",\r\n    \"password\": \"Alterar123@\",\r\n    \"confirm_password\": \"Alterar123@\"\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "api",
+			"item": [
+				{
+					"name": "v0",
+					"item": [
+						{
+							"name": "healthz",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}/healthz",
+									"host": [
+										"{{endpoint}}"
+									],
+									"path": [
+										"healthz"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "mongo/health",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}/api/v0/mongo/health",
+									"host": [
+										"{{endpoint}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"mongo",
+										"health"
+									]
+								}
+							},
+							"response": []
 						}
-					}
+					]
 				},
-				"url": {
-					"raw": "{{endpoint}}api/v1/user",
-					"host": [
-						"{{endpoint}}api"
-					],
-					"path": [
-						"v1",
-						"user"
+				{
+					"name": "v1",
+					"item": [
+						{
+							"name": "/api/v1/user",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "\r\n{\r\n    \"first_name\": \"Alan\",\r\n    \"last_name\": \"asdf\",\r\n    \"phone\": \"(21) 34567-8910\",\r\n    \"email\": \"FeiioLucasaa@Ugly.com\",\r\n    \"password\": \"Alterar123@\",\r\n    \"confirm_password\": \"Alterar123@\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{endpoint}}/api/v1/user",
+									"host": [
+										"{{endpoint}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/v1/user/{uuid}",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "\r\n{\r\n    \"first_name\": \"Marcasus\",\r\n    \"last_name\": \"Mariano\",\r\n    \"phone\": \"(21) 34567-8910\",\r\n    \"email\": \"FeiioLucas@Ugly.com\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{endpoint}}/api/v1/user/ffd9d3ea-09f1-4245-8f96-04cf225670f0",
+									"host": [
+										"{{endpoint}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user",
+										"ffd9d3ea-09f1-4245-8f96-04cf225670f0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/v1/user/{uuid}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}/api/v1/user/ffd9d3ea-09f1-4245-8f96-04cf225670f0",
+									"host": [
+										"{{endpoint}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user",
+										"ffd9d3ea-09f1-4245-8f96-04cf225670f0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/v1/users/{name}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}/api/v1/users/Lucas",
+									"host": [
+										"{{endpoint}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"Lucas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/v1/user/email/{email}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}/api/v1/user/email/FeiioLucas@Ugly.com",
+									"host": [
+										"{{endpoint}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user",
+										"email",
+										"FeiioLucas@Ugly.com"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/v1/users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}/api/v1/users?per_page=5&page=1",
+									"host": [
+										"{{endpoint}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users"
+									],
+									"query": [
+										{
+											"key": "per_page",
+											"value": "5"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/v1/user/{uuid}",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{endpoint}}/api/v1/user/ffd9d3ea-09f1-4245-8f96-04cf225670f0",
+									"host": [
+										"{{endpoint}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user",
+										"ffd9d3ea-09f1-4245-8f96-04cf225670f0"
+									]
+								}
+							},
+							"response": []
+						}
 					]
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "{{endpoint}}api/v1/users",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{endpoint}}api/v1/users",
-					"host": [
-						"{{endpoint}}api"
-					],
-					"path": [
-						"v1",
-						"users"
-					]
-				}
-			},
-			"response": []
+			]
 		}
 	]
 }
