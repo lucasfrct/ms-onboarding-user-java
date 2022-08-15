@@ -11,9 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @RestController
-public class Healthz {
+public class Health {
     
-    @RequestMapping("/healthz")
+    @RequestMapping("/health")
     public ResponseEntity<String> index() {
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

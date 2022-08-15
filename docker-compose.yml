@@ -1,41 +1,40 @@
 version: "3"
 services:
-  environment:
-    container_name: ms-onbloarding-authentication-java
-    image: ms-onbloarding-authentication-java
-    hostname: ms-onbloarding-authentication-java
+  development:
+    container_name: ms-onbloarding-user-java-dev
+    image: ms-onbloarding-user-java-dev
+    hostname: ms-onbloarding-user-java-dev
     labels:
-      description: ms-onbloarding-authentication-java
-      org.opencontainers.image.name: ms-onbloarding-authentication-java
-      org.opencontainers.image.authors: Lucas Costa
-      org.opencontainers.image.hostname: ms-onbloarding-authentication-java
-      com.docker.volume.name: ms-onbloarding-authentication-java
-      com.docker.network.bridge.name: ms-onbloarding-authentication-java
+      description: ms-onbloarding-user-java-dev
     build: 
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     working_dir: /tmp
     volumes:
       - ./:/tmp/
-      # - local-volume:/tmp/*
     env_file:
       - ./.env 
     environment:
       JAVA_ENV: "development"
-    command: java -jar /data/environment-java-0.1.0.jar
-    networks:
-      - local-network
+    command: mvn spring-boot:run
     restart: always
     ports:
       - 8080:8080
-    
-volumes:
-  local-volume:
-    name: ms-onbloarding-authentication-java
-networks:
-  local-network:
-    name: ms-onbloarding-authentication-java
-    driver: bridge
 
-#  mvn package
-#  java -jar .\target\environment-java-0.1.0.jar
+  production:
+    container_name: ms-onbloarding-user-java
+    image: ms-onbloarding-user-java
+    hostname: ms-onbloarding-user-java
+    labels:
+      description: ms-onbloarding-user-java
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    working_dir: /data
+    env_file:
+      - ./.env 
+    environment:
+      JAVA_ENV: "production"
+    restart: always
+    ports:
+      - 8081:8080  # host:container
